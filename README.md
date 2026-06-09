@@ -4,9 +4,9 @@
 
 ## Team Members
 
-- Ali Rajan - ali.rajan@mail.utoronto.ca
-- Austin Han - austinone.han@mail.utoronto.ca
-- Kaito Watanabe - kaito.watanabe@mail.utoronto.ca
+- Ali Rajan - rajanal1
+- Austin Han - hanausti
+- Kaito Watanabe - watan111
 
 ---
 
