@@ -20,18 +20,27 @@ part of the game and turn it into a TTS detector challenge.
 
 ---
 
-### Capabilities
+## Capabilities
 
 ### Authentication
+- Assignee: Austin Han
+
+We will be using Google OAuth
 
 ### Look and Feel
+- Assignee: Ali Rajan and Kaito Watanabe
 
 ### Real-time enablement
+-Assignee: Kaito Watanabe
 
 ### AI Integration with MCP / tools
+-Assignee: Austin Han
 
 ### Stripe Integration
+-Assignee: Ali Rajan
 
 ### Deployment
+-Assignee: Everyone(?)
 
 ### Architecture
+-Assignee: Everyone
