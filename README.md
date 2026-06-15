@@ -30,17 +30,30 @@ We will be using Google OAuth
 ### Look and Feel
 - Assignee: Ali Rajan and Kaito Watanabe
 
+TBA
+
 ### Real-time enablement
--Assignee: Kaito Watanabe
+- Assignee: Kaito Watanabe
+
+We will be using WebRTC with PeerJS for real time enablement, using Peer to Peer to Peer architecture
 
 ### AI Integration with MCP / tools
--Assignee: Austin Han
+- Assignee: Austin Han
+
+We plan on using Hugging Face (because it's free). To integrate it, we'll be using speech to text and
+text to speech to interact with it.
 
 ### Stripe Integration
--Assignee: Ali Rajan
+- Assignee: Ali Rajan
+
+We will use Webhooks and Cloudflared Tunnels
+
+Sandbox account publishable key: TBA
 
 ### Deployment
--Assignee: Everyone(?)
+- Assignee: Everyone(?)
+
+Domain name: TBA
 
 ### Architecture
--Assignee: Everyone
+- Assignee: Everyone
