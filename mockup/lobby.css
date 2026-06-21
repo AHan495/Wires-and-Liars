@@ -149,7 +149,7 @@ body {
 .lobby-panel {
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  height: 80%;
 }
 
 .panel-header {
