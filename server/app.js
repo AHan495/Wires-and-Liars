@@ -1,4 +1,5 @@
 import express from "express";
+import session from "express-session";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import { sequelize } from "./datasource.js";
@@ -10,6 +11,12 @@ const PORT = 3000;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+}));
 
 app.use(express.static("../dist"));
 
