@@ -62,6 +62,9 @@ Domain name: TBA
 
 ## Running the App
 
+To run the app, you will need to configure your .env.
+
+Option A:
 You need to run both the frontend (localhost:5173) and backend (localhost:3000).
 Run the backend with node app.js in the /server folder.
 Run the frontend with npm run dev in the root.
@@ -71,6 +74,7 @@ This option requires CORS which I haven't set up yet
 
 OR
 
+Option B:
 You need to run the backend (localhost:3000) with dist.
 Make /dist with npm run build in the root directory.
 Run the backend with node app.js in the /server folder.
