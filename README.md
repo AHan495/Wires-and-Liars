@@ -57,3 +57,12 @@ Domain name: TBA
 
 ### Architecture
 - Assignee: Everyone
+
+---
+
+## Running the App
+
+You need to run both the frontend (localhost:5173) and backend (localhost:3000).
+Run the backend with node app.js in the /server folder.
+Run the frontend with npm run dev in the root.
+Then visit localhost:5173.
