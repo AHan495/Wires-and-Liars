@@ -3,6 +3,7 @@ import session from "express-session";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import { sequelize } from "./datasource.js";
+import { authRouter } from "./routers/auth_router.js";
 
 dotenv.config();
 
@@ -39,3 +40,5 @@ app.listen(PORT, (err) => {
   if (err) console.log(err);
   else console.log("HTTP server on http://localhost:%s", PORT);
 });
+
+app.use("/auth", authRouter);
