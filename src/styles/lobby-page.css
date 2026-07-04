@@ -4,11 +4,6 @@
   overflow: hidden;
 }
 
-.panel-header h2,
-.room-card-heading h3 {
-  margin: 0;
-}
-
 .lobby-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.9fr);
@@ -25,46 +20,16 @@
   min-height: 0;
 }
 
-.panel {
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: var(--panel);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-  height: 100%;
-}
-
 .rooms-panel {
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr) auto;
   min-height: 0;
+  height: 100%;
 }
 
-.panel-header,
-.panel-body,
 .rooms-toolbar,
 .room-list {
   padding: 14px 16px;
-}
-
-.panel-header {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-  padding-top: 14px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.panel-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.panel-title svg {
-  color: var(--accent-strong);
 }
 
 .rooms-toolbar {
@@ -86,8 +51,7 @@
   font-size: 0.78rem;
 }
 
-.input-shell,
-.textarea-shell {
+.input-shell {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -97,19 +61,13 @@
   background: var(--panel-strong);
 }
 
-.textarea-shell {
-  align-items: flex-start;
-}
-
-.input-shell svg,
-.textarea-shell svg {
+.input-shell svg {
   flex: 0 0 auto;
   margin-top: 1px;
   color: var(--muted);
 }
 
-.field input,
-.field textarea {
+.field input {
   width: 100%;
   border: 0;
   padding: 0;
@@ -119,26 +77,17 @@
   font-size: 0.92rem;
 }
 
-.field input::placeholder,
-.field textarea::placeholder {
+.field input::placeholder {
   color: #71717a;
 }
 
-.field input:focus,
-.field textarea:focus {
+.field input:focus {
   outline: none;
 }
 
-.input-shell:focus-within,
-.textarea-shell:focus-within {
+.input-shell:focus-within {
   border-color: var(--border-strong);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
-}
-
-.field textarea {
-  resize: vertical;
-  min-height: 72px;
-  max-height: 112px;
 }
 
 .inline-field {
@@ -148,6 +97,11 @@
 
 .inline-field > .input-shell {
   flex: 1;
+}
+
+.join-code-button {
+  width: 96px;
+  flex: 0 0 96px;
 }
 
 .room-list {
@@ -205,6 +159,14 @@
   gap: 6px;
 }
 
+.room-card-actions {
+  flex-direction: row;
+}
+
+.room-card-actions .button {
+  flex: 1;
+}
+
 .room-card-heading {
   display: flex;
   align-items: center;
@@ -212,6 +174,7 @@
 }
 
 .room-card-heading h3 {
+  margin: 0;
   font-size: 0.98rem;
   line-height: 1.25;
 }
@@ -239,76 +202,6 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-}
-
-.button {
-  border: 1px solid transparent;
-  border-radius: 20px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 7px 12px;
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text);
-  font: inherit;
-  font-size: 0.82rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition:
-    border-color 140ms ease,
-    background 140ms ease,
-    opacity 140ms ease;
-}
-
-.button:hover,
-.button:focus-visible,
-.toggle:hover,
-.toggle:focus-visible {
-  border-color: var(--border-strong);
-  opacity: 0.92;
-}
-
-.room-card-actions {
-  flex-direction: row;
-}
-
-.room-card-actions .button {
-  flex: 1;
-}
-
-.button-primary {
-  background: rgba(37, 99, 235, 0.72);
-  color: #ffffff;
-}
-
-.button-translucent {
-  background: rgba(37, 99, 235, 0.2);
-  border-color: rgba(96, 165, 250, 0.2);
-  backdrop-filter: blur(4px);
-}
-
-.button-secondary,
-.button-ghost,
-.toggle {
-  border-color: var(--border);
-  background: rgba(22, 32, 51, 0.74);
-}
-
-.button-secondary:hover,
-.button-ghost:hover,
-.toggle:hover,
-.toggle-active {
-  border-color: var(--border-strong);
-}
-
-.button-ghost.button-translucent {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.button-block {
-  width: 100%;
-  justify-content: center;
 }
 
 .switch-field {
@@ -346,7 +239,9 @@
   border: 1px solid rgba(37, 99, 235, 0.35);
   border-radius: 999px;
   background: #1a1a1d;
-  transition: background 140ms ease, border-color 140ms ease;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease;
 }
 
 .switch-thumb {
@@ -398,5 +293,10 @@
   .room-card-actions {
     width: 100%;
     flex-direction: column;
+  }
+
+  .join-code-button {
+    width: 100%;
+    flex-basis: auto;
   }
 }

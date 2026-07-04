@@ -1,6 +1,8 @@
-import { Eye, KeyRound, LogIn, Radio, UserRound } from 'lucide-react'
+import { Eye, KeyRound, LogIn, Radio, UserRound } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function RoomCard({ room }) {
+  const navigate = useNavigate();
 
   return (
     <article className={`room-card`}>
@@ -29,17 +31,24 @@ function RoomCard({ room }) {
       </div>
 
       <div className="room-card-actions">
-        <button type="button" className="button button-primary button-translucent">
+        <button
+          type="button"
+          className="button button-primary button-translucent"
+          onClick={() => navigate("/room", { state: { room } })}
+        >
           <LogIn size={14} strokeWidth={2} />
           Join room
         </button>
-        <button type="button" className="button button-ghost button-translucent">
+        <button
+          type="button"
+          className="button button-ghost button-translucent"
+        >
           <Eye size={14} strokeWidth={2} />
           Preview
         </button>
       </div>
     </article>
-  )
+  );
 }
 
-export default RoomCard
+export default RoomCard;
