@@ -72,13 +72,13 @@ function LobbyPage() {
           </div>
 
           {/* Make it infinite scrolling or pagination */}
-          <div className="room-list">
             {filteredRooms.length > 0 ? (
-              filteredRooms.map((room) => <RoomCard key={room.id} room={room} />)
+              <div className="room-list">
+                {filteredRooms.map((room) => <RoomCard key={room.id} room={room} />)}
+              </div>
             ) : (
               <p className="room-list-empty">No rooms match your search.</p>
             )}
-          </div>
 
           <div className="rooms-toolbar">
             <label className="field field-code">
