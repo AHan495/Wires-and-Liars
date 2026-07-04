@@ -1,6 +1,9 @@
 import { Globe, Lock, Plus } from 'lucide-react'
+import { useState } from 'react'
 
-function CreateRoomPanel({ isPrivate, onTogglePrivate }) {
+function CreateRoomPanel() {
+  const [isPrivate, setIsPrivate] = useState(false);
+  
   return (
     <section className="panel">
       <header className="panel-header">
@@ -37,7 +40,7 @@ function CreateRoomPanel({ isPrivate, onTogglePrivate }) {
               className={`switch${isPrivate ? ' switch-private' : ''}`}
               aria-label="Toggle room visibility"
               aria-pressed={isPrivate}
-              onClick={onTogglePrivate}
+              onClick={() => setIsPrivate(!isPrivate)}
             >
               <span className="switch-track">
                 <span className="switch-thumb" />

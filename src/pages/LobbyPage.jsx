@@ -35,7 +35,6 @@ const sampleRooms = [
 ]
 
 function LobbyPage() {
-  const [isPrivate, setIsPrivate] = useState(false)
   const [searchText, setSearchText] = useState('')
 
   const normalizedSearch = searchText.trim().toLowerCase()
@@ -72,6 +71,7 @@ function LobbyPage() {
             </label>
           </div>
 
+          {/* Make it infinite scrolling or pagination */}
           <div className="room-list">
             {filteredRooms.length > 0 ? (
               filteredRooms.map((room) => <RoomCard key={room.id} room={room} />)
@@ -99,10 +99,7 @@ function LobbyPage() {
         </section>
 
         <aside className="lobby-sidebar">
-          <CreateRoomPanel
-            isPrivate={isPrivate}
-            onTogglePrivate={() => setIsPrivate((value) => !value)}
-          />
+          <CreateRoomPanel/>
         </aside>
       </section>
     </main>
