@@ -1,12 +1,11 @@
-import { Globe, Lock, Plus, SlidersHorizontal } from 'lucide-react'
+import { Globe, Lock, Plus } from 'lucide-react'
 
 function CreateRoomPanel({ isPrivate, onTogglePrivate }) {
   return (
     <section className="panel">
       <header className="panel-header">
         <div className="panel-title">
-          <SlidersHorizontal size={16} strokeWidth={2} />
-          <h2>Room setup</h2>
+          <h2>Room Setup</h2>
         </div>
       </header>
 
@@ -22,7 +21,7 @@ function CreateRoomPanel({ isPrivate, onTogglePrivate }) {
           <span>Visibility</span>
           <div className="switch-field">
             <span className={!isPrivate ? 'switch-label switch-label-active' : 'switch-label'}>
-              <Globe size={14} strokeWidth={2} />
+              <Globe size={14} strokeWidth={2} color='#27a656' />
               Public
             </span>
             <button
@@ -37,7 +36,7 @@ function CreateRoomPanel({ isPrivate, onTogglePrivate }) {
               </span>
             </button>
             <span className={isPrivate ? 'switch-label switch-label-active' : 'switch-label'}>
-              <Lock size={14} strokeWidth={2} />
+              <Lock size={14} strokeWidth={2} color='#c04b4b'/>
               Private
             </span>
           </div>

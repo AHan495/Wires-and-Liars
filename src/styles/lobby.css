@@ -8,27 +8,6 @@
   margin: 0;
 }
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-  border-radius: 999px;
-  padding: 6px 10px;
-  font-size: 0.82rem;
-  white-space: nowrap;
-}
-
-.badge-public {
-  border: 1px solid rgba(34, 197, 94, 0.38);
-  background: rgba(34, 197, 94, 0.14);
-  color: #86efac;
-}
-
-.badge-private {
-  border: 1px solid rgba(239, 68, 68, 0.38);
-  background: rgba(239, 68, 68, 0.14);
-  color: #fca5a5;
-}
-
 .lobby-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.9fr);
@@ -189,7 +168,7 @@
   background: var(--panel-soft);
 }
 
-.room-card-featured {
+.room-card:hover {
   border-color: var(--border-strong);
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
 }

@@ -6,32 +6,31 @@ import RoomCard from '../components/RoomCard'
 const sampleRooms = [
   {
     id: 'AI-7QK9',
-    name: 'Night Shift Interrogation',
-    host: 'Blue',
-    players: '1 / 2 players',
-    visibility: 'Public',
-    featured: true,
+    name: 'Example 1',
+    host: 'User 1',
+    players: 1,
+    public: true,
   },
   {
     id: 'ZX-2LM4',
-    name: 'Signal Checkpoint',
-    host: 'Green',
-    players: '0 / 2 players',
-    visibility: 'Public',
+    name: 'Example 2',
+    host: 'User 2',
+    players: 0,
+    public: true,
   },
   {
     id: 'MN-5TR8',
-    name: 'False Memory Trial',
-    host: 'Yellow',
-    players: '1 / 2 players',
-    visibility: 'Private',
+    name: 'Example 3',
+    host: 'User 3',
+    players: 1,
+    public: true,
   },
   {
     id: 'QP-8DS1',
-    name: 'Afterimage Debate',
-    host: 'Violet',
-    players: '1 / 2 players',
-    visibility: 'Public',
+    name: 'Example 4',
+    host: 'User 4',
+    players: 1,
+    public: true,
   },
 ]
 
@@ -44,7 +43,7 @@ function LobbyPage() {
         <section className="panel rooms-panel">
           <header className="panel-header">
             <div>
-              <h2>Open rooms</h2>
+              <h2>Public Rooms</h2>
             </div>
           </header>
 
