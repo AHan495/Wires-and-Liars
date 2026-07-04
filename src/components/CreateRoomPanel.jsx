@@ -1,6 +1,6 @@
 import { Globe, Lock, Plus } from "lucide-react";
 import { useState } from "react";
-import { Switch } from '@mui/material'; // https://mui.com/
+import { Switch } from "@mui/material"; // https://mui.com/
 import { createDraftRoom, generateRoomCode } from "../data/rooms";
 
 function CreateRoomPanel({ onCreateRoom }) {
