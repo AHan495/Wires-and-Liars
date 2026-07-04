@@ -4,12 +4,13 @@ import { defaultRoom } from "../data/rooms";
 import "../styles/room-page.css";
 
 function RoomPage() {
-  // Use React Router hooks to access navigation
+  // Use React Router hooks to access navigation and location state
   const navigate = useNavigate();
 
   // Use the location state to retrieve the room object passed from the previous page
   const location = useLocation();
 
+  // If no room is passed in the location state, use the default room
   const room = location.state?.room ?? defaultRoom;
   const slotsLeft = Math.max(0, 2 - room.players);
 

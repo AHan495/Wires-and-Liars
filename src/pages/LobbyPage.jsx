@@ -8,7 +8,10 @@ import "../styles/lobby-page.css";
 import "../styles/cols.css";
 
 function LobbyPage() {
+  // Use React Router hooks to access navigation and location state
   const navigate = useNavigate();
+
+  // Will add useEffect when we implement API calls (useState is enought to rerender for now)
   const [searchText, setSearchText] = useState("");
   const [roomCode, setRoomCode] = useState("");
 
@@ -38,8 +41,8 @@ function LobbyPage() {
 
     if (matchedRoom) {
       openRoom(matchedRoom);
-      return;
     }
+
     return;
   }
 

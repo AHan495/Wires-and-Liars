@@ -29,6 +29,7 @@ export const sampleRooms = [
   },
 ];
 
+// Default room object used when no room data is available
 export const defaultRoom = {
   id: "AI-7QK9",
   name: "Waiting Room",

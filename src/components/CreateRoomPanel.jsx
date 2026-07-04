@@ -1,5 +1,6 @@
 import { Globe, Lock, Plus } from "lucide-react";
 import { useState } from "react";
+import { Switch } from '@mui/material'; // https://mui.com/
 import { createDraftRoom, generateRoomCode } from "../data/rooms";
 
 function CreateRoomPanel({ onCreateRoom }) {
@@ -63,17 +64,11 @@ function CreateRoomPanel({ onCreateRoom }) {
                 Private
               </span>
             )}
-            <button
-              type="button"
-              className={`switch${isPrivate ? " switch-private" : ""}`}
-              aria-label="Toggle room visibility"
-              aria-pressed={isPrivate}
-              onClick={() => setIsPrivate(!isPrivate)}
-            >
-              <span className="switch-track">
-                <span className="switch-thumb" />
-              </span>
-            </button>
+            <Switch
+              checked={isPrivate}
+              onChange={(e) => setIsPrivate(e.target.checked)}
+              color="primary"
+            />
           </div>
         </div>
 
