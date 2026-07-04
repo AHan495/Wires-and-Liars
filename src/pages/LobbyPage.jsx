@@ -1,4 +1,4 @@
-import { Search, Ticket } from 'lucide-react'
+import { Search, Ticket, LogIn } from 'lucide-react'
 import { useState } from 'react'
 import CreateRoomPanel from '../components/CreateRoomPanel'
 import RoomCard from '../components/RoomCard'
@@ -55,18 +55,6 @@ function LobbyPage() {
                 <input type="text" placeholder="Room name or host" />
               </div>
             </label>
-            <label className="field field-code">
-              <span>Join by code</span>
-              <div className="inline-field">
-                <div className="input-shell">
-                  <Ticket size={15} strokeWidth={2} />
-                  <input type="text" placeholder="AI-7QK9" />
-                </div>
-                <button type="button" className="button button-primary">
-                  Join
-                </button>
-              </div>
-            </label>
           </div>
 
           <div className="room-list">
@@ -74,6 +62,23 @@ function LobbyPage() {
               <RoomCard key={room.id} room={room} />
             ))}
           </div>
+
+          <div className="rooms-toolbar">
+            <label className="field field-code">
+                <span>Join by code</span>
+                <div className="inline-field">
+                  <div className="input-shell col-10">
+                    <Ticket size={15} strokeWidth={2} />
+                    <input type="text" placeholder="AI-7QK9" />
+                  </div>
+                  <button type="button" className="button button-primary col-2">
+                    <LogIn size={14} strokeWidth={2} />
+                    Join
+                  </button>
+                </div>
+            </label>
+          </div>
+
         </section>
 
         <aside className="lobby-sidebar">

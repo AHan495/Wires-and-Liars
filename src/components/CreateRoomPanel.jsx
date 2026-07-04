@@ -20,10 +20,18 @@ function CreateRoomPanel({ isPrivate, onTogglePrivate }) {
         <div className="field">
           <span>Visibility</span>
           <div className="switch-field">
-            <span className={!isPrivate ? 'switch-label switch-label-active' : 'switch-label'}>
-              <Globe size={14} strokeWidth={2} color='#27a656' />
-              Public
-            </span>
+            {/* Toggles the display */}
+            {!isPrivate ? (
+              <span className='switch-label switch-label-active'>
+                <Globe size={14} strokeWidth={2} color='#27a656' />
+                Public
+              </span>
+            ) : (
+              <span className={isPrivate ? 'switch-label switch-label-active' : 'switch-label'}>
+                <Lock size={14} strokeWidth={2} color='#c04b4b'/>
+                Private
+              </span>
+            )}
             <button
               type="button"
               className={`switch${isPrivate ? ' switch-private' : ''}`}
@@ -35,10 +43,6 @@ function CreateRoomPanel({ isPrivate, onTogglePrivate }) {
                 <span className="switch-thumb" />
               </span>
             </button>
-            <span className={isPrivate ? 'switch-label switch-label-active' : 'switch-label'}>
-              <Lock size={14} strokeWidth={2} color='#c04b4b'/>
-              Private
-            </span>
           </div>
         </div>
 
