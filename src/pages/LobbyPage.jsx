@@ -36,6 +36,16 @@ const sampleRooms = [
 
 function LobbyPage() {
   const [isPrivate, setIsPrivate] = useState(false)
+  const [searchText, setSearchText] = useState('')
+
+  const normalizedSearch = searchText.trim().toLowerCase()
+  const filteredRooms = sampleRooms.filter((room) => {
+    if (!normalizedSearch) return true
+
+    return [room.name, room.host, room.id].some((value) =>
+      value.toLowerCase().includes(normalizedSearch),
+    )
+  })
 
   return (
     <main className="lobby-page">
@@ -52,15 +62,22 @@ function LobbyPage() {
               <span>Search rooms</span>
               <div className="input-shell">
                 <Search size={15} strokeWidth={2} />
-                <input type="text" placeholder="Room name or host" />
+                <input
+                  type="text"
+                  placeholder="Room name, host, or code"
+                  value={searchText}
+                  onChange={(event) => setSearchText(event.target.value)}
+                />
               </div>
             </label>
           </div>
 
           <div className="room-list">
-            {sampleRooms.map((room) => (
-              <RoomCard key={room.id} room={room} />
-            ))}
+            {filteredRooms.length > 0 ? (
+              filteredRooms.map((room) => <RoomCard key={room.id} room={room} />)
+            ) : (
+              <p className="room-list-empty">No rooms match your search.</p>
+            )}
           </div>
 
           <div className="rooms-toolbar">

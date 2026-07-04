@@ -11,7 +11,7 @@
 .lobby-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.9fr);
-  gap: 16px;
+  gap: 32px;
   margin: 40px;
 }
 
@@ -146,6 +146,13 @@
   overflow-y: auto;
   padding-bottom: 18px;
   background: #000;
+}
+
+.room-list-empty {
+  margin: 0;
+  padding: 18px 6px;
+  color: var(--muted);
+  text-align: center;
 }
 
 .room-list::-webkit-scrollbar {
