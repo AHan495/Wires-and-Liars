@@ -6,9 +6,14 @@ import {
   AuthHeading,
   AuthNoteRoot,
   AuthNoteText,
+  BrandMark,
+  Eyebrow,
   GoogleButton,
   GoogleButtonLabel,
   GoogleGlyph,
+  HeroPanel,
+  HeroText,
+  LoginTitle,
   LoginMain,
   LoginPanel,
   LoginShell,
@@ -26,6 +31,24 @@ function LoginPage() {
   return (
     <LoginMain>
       <LoginShell>
+        <HeroPanel>
+          <Stack spacing={3}>
+            <BrandMark aria-hidden="true">
+              <ShieldCheck size={22} strokeWidth={2.2} />
+            </BrandMark>
+            <Stack spacing={1.5}>
+              <Eyebrow>Wires and Liars</Eyebrow>
+              <LoginTitle component="h1">
+                Read the room before it reads you.
+              </LoginTitle>
+            </Stack>
+          </Stack>
+
+          <HeroText>
+            Sign in to host rooms, join live games, and track your games.
+          </HeroText>
+        </HeroPanel>
+
         <LoginPanel>
           <Stack spacing={1}>
             <AuthHeading component="h2" variant="h5">

@@ -13,21 +13,77 @@ export const LoginMain = styled(Box)({
 });
 
 export const LoginShell = styled(Box)({
-  width: "min(380px, 100%)",
+  width: "min(920px, 100%)",
+  display: "grid",
+  gridTemplateColumns: "minmax(0, 1fr) 340px",
+  gap: "18px",
+  alignItems: "stretch",
+  "@media (max-width: 820px)": {
+    gridTemplateColumns: "1fr",
+  },
 });
 
-export const LoginPanel = styled(Card)({
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
-  gap: "24px",
-  padding: "22px",
+const BasePanel = styled(Card)({
   border: "1px solid var(--border)",
   borderRadius: "16px",
   background: "var(--panel)",
   color: "var(--text)",
   boxShadow: "var(--shadow)",
   overflow: "hidden",
+});
+
+export const HeroPanel = styled(BasePanel)({
+  minHeight: "420px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  padding: "28px",
+  background:
+    "linear-gradient(145deg, rgba(11, 17, 32, 0.98), rgba(16, 24, 39, 0.9))",
+  "@media (max-width: 820px)": {
+    minHeight: "auto",
+  },
+});
+
+export const LoginPanel = styled(BasePanel)({
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  gap: "24px",
+  padding: "22px",
+});
+
+export const BrandMark = styled(Box)({
+  width: "44px",
+  height: "44px",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  borderRadius: "14px",
+  border: "1px solid rgba(96, 165, 250, 0.34)",
+  background: "rgba(37, 99, 235, 0.16)",
+  color: "var(--accent-strong)",
+});
+
+export const Eyebrow = styled(Typography)({
+  color: "var(--accent-strong)",
+  fontSize: "0.78rem",
+  fontWeight: 700,
+  letterSpacing: 0,
+  textTransform: "uppercase",
+});
+
+export const LoginTitle = styled(Typography)({
+  color: "var(--text)",
+  fontSize: "clamp(2rem, 5vw, 4rem)",
+  lineHeight: 0.95,
+  fontWeight: 800,
+  letterSpacing: 0,
+});
+
+export const HeroText = styled(Typography)({
+  color: "var(--muted)",
+  fontSize: "0.94rem",
 });
 
 export const AuthHeading = styled(Typography)({

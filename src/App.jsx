@@ -7,7 +7,7 @@ import RoomPage from "./pages/RoomPage";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/lobby" replace />} />
+      <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/lobby" element={<LobbyPage />} />
       <Route path="/room" element={<RoomPage />} />
