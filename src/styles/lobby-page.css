@@ -1,0 +1,257 @@
+.lobby-page {
+  height: 100vh;
+  padding: 20px 24px;
+  overflow: hidden;
+}
+
+.lobby-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.9fr);
+  gap: 20px;
+  height: 100%;
+  min-height: 0;
+}
+
+.lobby-sidebar,
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+
+.rooms-panel {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  min-height: 0;
+  height: 100%;
+}
+
+.rooms-toolbar,
+.room-list {
+  padding: 14px 16px;
+}
+
+.rooms-toolbar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.input-shell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 9px 11px;
+  background: var(--panel-strong);
+}
+
+.input-shell svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: var(--muted);
+}
+
+.field input {
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.92rem;
+}
+
+.field input::placeholder {
+  color: #71717a;
+}
+
+.field input:focus {
+  outline: none;
+}
+
+.input-shell:focus-within {
+  border-color: var(--border-strong);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+}
+
+.inline-field {
+  display: flex;
+  gap: 8px;
+}
+
+.inline-field > .input-shell {
+  flex: 1;
+}
+
+.join-code-button {
+  width: 96px;
+  flex: 0 0 96px;
+}
+
+.room-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  min-height: 0;
+  align-content: start;
+  grid-auto-rows: max-content;
+  overflow-y: auto;
+  padding-top: 6px;
+  padding-bottom: 14px;
+  background: transparent;
+}
+
+.room-list-empty {
+  margin: 0;
+  padding: 18px 6px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.room-list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.room-list::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 20px;
+  background: #3a3a42;
+  background-clip: padding-box;
+}
+
+.room-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  background: var(--panel-soft);
+}
+
+.room-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.room-card-main,
+.room-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.room-card-actions {
+  flex-direction: row;
+}
+
+.room-card-actions .button {
+  flex: 1;
+}
+
+.room-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.room-card-heading h3 {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.25;
+}
+
+.room-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  background: rgba(37, 99, 235, 0.14);
+  color: var(--accent-strong);
+}
+
+.room-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.switch-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.switch-label-active {
+  color: var(--accent-strong);
+}
+
+.panel-body {
+  min-height: 0;
+}
+
+@media (max-width: 960px) {
+  .lobby-page {
+    padding: 20px;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .lobby-layout,
+  .rooms-toolbar,
+  .inline-field {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .lobby-layout {
+    height: auto;
+  }
+
+  .room-list {
+    grid-template-columns: 1fr;
+    max-height: 50vh;
+  }
+
+  .room-card-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .join-code-button {
+    width: 100%;
+    flex-basis: auto;
+  }
+}

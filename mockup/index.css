@@ -287,7 +287,10 @@ body {
   font: inherit;
   font-weight: 800;
   cursor: default;
-  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
 }
 
 .control-button:hover,

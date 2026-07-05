@@ -10,7 +10,7 @@ export const authRouter = express.Router();
 const client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  "http://localhost:3000/auth/callback"
+  "http://localhost:3000/auth/callback",
 );
 
 // Generate a URL to redirect the user to where they will authorize with Google
