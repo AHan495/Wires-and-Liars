@@ -1,7 +1,7 @@
 import { Stack } from "@mui/material";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 import { useState } from "react";
-import { loginWithGoogle } from "../services/authApi";
+import { loginWithGoogle } from "../services/auth-api";
 import {
   AuthHeading,
   AuthNoteRoot,
@@ -17,9 +17,10 @@ import {
 function LoginPage() {
   const [isRedirecting, setIsRedirecting] = useState(false);
 
-  function handleGoogleLogin() {
+  async function handleGoogleLogin() {
     setIsRedirecting(true);
-    loginWithGoogle();
+    await loginWithGoogle();
+    setIsRedirecting(false);
   }
 
   return (
