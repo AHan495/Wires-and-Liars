@@ -1,17 +1,11 @@
 import { ArrowLeft, Play, Radio, Users } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { defaultRoom } from "../data/rooms";
+import { useNavigate } from "react-router-dom";
+import { useRoomFromLocationState } from "../utils/roomState";
 import "../styles/room-page.css";
 
 function RoomPage() {
-  // Use React Router hooks to access navigation and location state
   const navigate = useNavigate();
-
-  // Use the location state to retrieve the room object passed from the previous page
-  const location = useLocation();
-
-  // If no room is passed in the location state, use the default room
-  const room = location.state?.room ?? defaultRoom;
+  const room = useRoomFromLocationState();
   const slotsLeft = Math.max(0, 2 - room.players);
 
   return (
@@ -90,7 +84,11 @@ function RoomPage() {
         </section>
 
         <footer className="room-actions">
-          <button type="button" className="button button-primary col-2">
+          <button
+            type="button"
+            className="button button-primary col-2"
+            onClick={() => navigate("/match", { state: { room } })}
+          >
             <Play size={14} strokeWidth={2} />
             Start
           </button>

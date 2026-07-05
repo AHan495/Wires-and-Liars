@@ -11,7 +11,7 @@ function LobbyPage() {
   // Use React Router hooks to access navigation and location state
   const navigate = useNavigate();
 
-  // Will add useEffect when we implement API calls (useState is enought to rerender for now)
+  // Will add useEffect when we implement API calls (useState is enough to rerender for now)
   const [searchText, setSearchText] = useState("");
   const [roomCode, setRoomCode] = useState("");
 
