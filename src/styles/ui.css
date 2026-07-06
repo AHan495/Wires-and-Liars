@@ -1,0 +1,91 @@
+.panel {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.panel-header,
+.panel-body {
+  padding: 14px 16px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding-top: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-header h2 {
+  margin: 0;
+}
+
+.panel-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-title svg {
+  color: var(--accent-strong);
+}
+
+.button {
+  border: 1px solid transparent;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    background 140ms ease,
+    opacity 140ms ease;
+}
+
+.button:hover,
+.button:focus-visible {
+  border-color: var(--border-strong);
+  opacity: 0.92;
+}
+
+.button-primary {
+  background: rgba(37, 99, 235, 0.72);
+  color: #ffffff;
+}
+
+.button-translucent {
+  background: rgba(37, 99, 235, 0.2);
+  border-color: rgba(96, 165, 250, 0.2);
+  backdrop-filter: blur(4px);
+}
+
+.button-ghost {
+  border-color: var(--border);
+  background: rgba(22, 32, 51, 0.74);
+}
+
+.button-ghost:hover {
+  border-color: var(--border-strong);
+}
+
+.button-ghost.button-translucent {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.button-block {
+  width: 100%;
+  justify-content: center;
+}

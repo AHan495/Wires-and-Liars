@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wires and Liars Voice Chat Mockup</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-label="Voice chat game mockup">
+      <header class="top-bar">
+        <div class="identity">
+          <span class="swatch" aria-hidden="true"></span>
+          <span>You are <span class="identity-color blue">Blue</span></span>
+        </div>
+
+        <div class="timer is-warning" aria-label="15 seconds remaining">
+          0:15
+        </div>
+      </header>
+
+      <section class="voice-grid" aria-label="Players">
+        <article
+          class="player-card player-red is-speaking"
+          aria-label="Red player speaking"
+        >
+          <div class="player-header">
+            <div class="player-name red">
+              <span class="player-dot" aria-hidden="true"></span>
+              <span>Red</span>
+            </div>
+            <div class="soundwave" aria-label="Red is speaking">
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </div>
+          </div>
+          <div class="transcript">
+            <p>
+              I asked the same question twice because the first answer sounded
+              rehearsed.
+            </p>
+            <p class="is-current">
+              Green, what did Blue say at the start about the prompt?
+            </p>
+          </div>
+        </article>
+
+        <article class="player-card player-green" aria-label="Green player">
+          <div class="player-header">
+            <div class="player-name green">
+              <span class="player-dot" aria-hidden="true"></span>
+              <span>Green</span>
+            </div>
+            <div class="soundwave" aria-label="Green is speaking">
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </div>
+          </div>
+          <div class="transcript">
+            <p>
+              Blue said the prompt was about planning a weekend trip, then asked
+              who chose the lake.
+            </p>
+          </div>
+        </article>
+
+        <article
+          class="player-card player-blue current-user"
+          aria-label="Blue player current user"
+        >
+          <div class="player-header">
+            <div class="player-name blue">
+              <span class="player-dot" aria-hidden="true"></span>
+              <span>Blue</span>
+            </div>
+            <div class="soundwave" aria-label="Blue is speaking">
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </div>
+          </div>
+          <div class="transcript">
+            <p>
+              I remember Red mentioning the cabin first, but I do not think
+              Green followed up on that detail.
+            </p>
+          </div>
+        </article>
+      </section>
+
+      <footer class="controls" aria-label="Game controls">
+        <!-- Mute icon source: https://www.flaticon.com/free-icon/mute_709552 -->
+        <button class="control-button secondary" type="button">
+          <img src="mute.png" alt="" aria-hidden="true" />
+          <span>Mute</span>
+        </button>
+        <!-- Leave icon source: https://www.flaticon.com/free-icon/logout_3889524 -->
+        <button class="control-button danger" type="button">
+          <img src="leave.png" alt="" aria-hidden="true" />
+          <span>Leave Game</span>
+        </button>
+      </footer>
+    </main>
+  </body>
+</html>

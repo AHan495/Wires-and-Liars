@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wires and Liars Lobby Mockup</title>
+    <link rel="stylesheet" href="lobby.css" />
+  </head>
+  <body>
+    <main class="lobby-shell" aria-label="Lobby mockup">
+      <header class="top-bar">
+        <div class="identity">
+          <span class="swatch" aria-hidden="true"></span>
+          <span>Queueing as <span class="identity-color blue">Blue</span></span>
+        </div>
+      </header>
+
+      <section class="lobby-grid" aria-label="Lobby layout">
+        <div class="lobby-column">
+          <section class="lobby-panel panel" aria-label="Open rooms">
+            <header class="panel-header">
+              <div>
+                <div class="panel-kicker">Live Rooms</div>
+                <h1>Open rooms</h1>
+                <p>Join a public table or use a private room code.</p>
+              </div>
+              <div class="room-count">14 active now</div>
+            </header>
+
+            <div class="rooms-panel-body">
+              <div class="room-list">
+                <article class="room-card is-featured">
+                  <div class="room-main">
+                    <div class="room-title-row">
+                      <div class="room-title">Night Shift Interrogation</div>
+                      <span class="room-badge public">Public</span>
+                    </div>
+                    <div class="room-meta">
+                      <span class="meta-pill">1 / 2 players</span>
+                      <span>Host: Red</span>
+                    </div>
+                  </div>
+                  <div class="room-action">
+                    <button class="control-button primary" type="button">
+                      Join Room
+                    </button>
+                  </div>
+                </article>
+
+                <article class="room-card">
+                  <div class="room-main">
+                    <div class="room-title-row">
+                      <div class="room-title">False Memory Trial</div>
+                      <span class="room-badge public">Public</span>
+                    </div>
+                    <div class="room-meta">
+                      <span class="meta-pill">1 / 2 players</span>
+                      <span>Host: Green</span>
+                    </div>
+                  </div>
+                  <div class="room-action">
+                    <button class="control-button primary" type="button">
+                      Join Room
+                    </button>
+                  </div>
+                </article>
+
+                <article class="room-card">
+                  <div class="room-main">
+                    <div class="room-title-row">
+                      <div class="room-title">Signal Checkpoint</div>
+                      <span class="room-badge public">Public</span>
+                    </div>
+                    <div class="room-meta">
+                      <span class="meta-pill">0 / 2 players</span>
+                      <span>Host waiting</span>
+                    </div>
+                  </div>
+                  <div class="room-action">
+                    <button class="control-button primary" type="button">
+                      Join Room
+                    </button>
+                  </div>
+                </article>
+
+                <article class="room-card">
+                  <div class="room-main">
+                    <div class="room-title-row">
+                      <div class="room-title">Two Truths Terminal</div>
+                      <span class="room-badge public">Public</span>
+                    </div>
+                    <div class="room-meta">
+                      <span class="meta-pill">1 / 2 players</span>
+                      <span>Host: Yellow</span>
+                    </div>
+                  </div>
+                  <div class="room-action">
+                    <button class="control-button primary" type="button">
+                      Join Room
+                    </button>
+                  </div>
+                </article>
+
+                <article class="room-card">
+                  <div class="room-main">
+                    <div class="room-title-row">
+                      <div class="room-title">Afterimage Debate</div>
+                      <span class="room-badge public">Public</span>
+                    </div>
+                    <div class="room-meta">
+                      <span class="meta-pill">1 / 2 players</span>
+                      <span>Host: Violet</span>
+                    </div>
+                  </div>
+                  <div class="room-action">
+                    <button class="control-button primary" type="button">
+                      Join Room
+                    </button>
+                  </div>
+                </article>
+              </div>
+
+              <div class="join-row" aria-label="Join private room">
+                <input
+                  id="room-id"
+                  class="text-input"
+                  type="text"
+                  value="AI-7QK9"
+                  aria-label="Room ID"
+                />
+                <button
+                  class="control-button primary join-code-button"
+                  type="button"
+                >
+                  Join by Code
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="lobby-column">
+          <section class="lobby-panel panel" aria-label="Room control panel">
+            <header class="panel-header">
+              <div>
+                <div class="panel-kicker">Create Room</div>
+                <h2>Room control panel</h2>
+                <p>
+                  Choose whether the next room is listed publicly or shared by
+                  code.
+                </p>
+              </div>
+            </header>
+
+            <div class="control-panel-body">
+              <section class="control-section">
+                <h3>Room name</h3>
+                <label class="control-field" for="create-room-name">
+                  <input
+                    id="create-room-name"
+                    class="text-input"
+                    type="text"
+                    value="Cross-Examination"
+                    aria-label="Room name"
+                  />
+                </label>
+              </section>
+
+              <section class="control-section">
+                <h3>Visibility</h3>
+                <p>
+                  Toggle between a listed public room and a code-only private
+                  room.
+                </p>
+
+                <div class="visibility-switch-row" aria-label="Room visibility">
+                  <span class="switch-label is-active">Public</span>
+                  <button
+                    class="visibility-switch"
+                    type="button"
+                    aria-pressed="false"
+                    aria-label="Toggle room visibility"
+                  >
+                    <span class="visibility-switch-track">
+                      <span
+                        class="visibility-switch-thumb"
+                        aria-hidden="true"
+                      ></span>
+                    </span>
+                  </button>
+                  <span class="switch-label">Private</span>
+                </div>
+              </section>
+
+              <div class="control-actions">
+                <button class="control-button primary" type="button">
+                  Create Room
+                </button>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </section>
+    </main>
+  </body>
+</html>

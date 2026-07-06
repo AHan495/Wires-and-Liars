@@ -1,0 +1,181 @@
+.room-page {
+  min-height: 100vh;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.room-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: min(1040px, 100%);
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.room-header,
+.room-hero,
+.room-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.room-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid rgba(96, 165, 250, 0.28);
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.14);
+  color: var(--accent-strong);
+  font-size: 0.8rem;
+}
+
+.room-hero {
+  align-items: stretch;
+}
+
+.room-hero-copy {
+  flex: 1;
+}
+
+.room-eyebrow {
+  margin: 0 0 8px;
+  color: var(--accent-strong);
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.room-hero-copy h1 {
+  margin: 0 0 10px;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+}
+
+.room-hero-copy p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 48ch;
+}
+
+.room-code-card {
+  min-width: 220px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--panel-strong);
+}
+
+.room-code-label,
+.room-code-visibility {
+  display: block;
+}
+
+.room-code-label {
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.room-code-card strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+  letter-spacing: 0.08em;
+}
+
+.room-code-visibility {
+  color: var(--accent-strong);
+  font-size: 0.84rem;
+}
+
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.room-detail-card {
+  padding: 18px;
+}
+
+.room-detail-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.room-detail-heading h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.room-detail-list,
+.room-player-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.room-detail-item,
+.room-player-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel-soft);
+}
+
+.room-detail-item span,
+.room-player-role {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.room-player-card-active {
+  border-color: rgba(96, 165, 250, 0.32);
+}
+
+.room-player-card-empty {
+  border-style: dashed;
+}
+
+.room-player-name {
+  font-weight: 600;
+}
+
+.room-actions {
+  justify-content: flex-end;
+}
+
+@media (max-width: 960px) {
+  .room-page {
+    padding: 20px;
+  }
+
+  .room-shell {
+    padding: 18px;
+  }
+
+  .room-header,
+  .room-hero,
+  .room-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .room-grid {
+    grid-template-columns: 1fr;
+  }
+}

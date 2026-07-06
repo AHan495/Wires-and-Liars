@@ -1,0 +1,356 @@
+:root {
+  color-scheme: dark;
+  --bg: #111214;
+  --panel: #1c1e22;
+  --panel-raised: #24272d;
+  --border: #343841;
+  --text: #f2f4f8;
+  --muted: #a7adba;
+  --danger: #ef4444;
+  --danger-dark: #7f1d1d;
+  --accent: #22c55e;
+  --red: #ff5f57;
+  --green: #43d17a;
+  --blue: #5aa7ff;
+  --shadow: 0 18px 40px rgba(0, 0, 0, 0.34);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(90, 167, 255, 0.14),
+      transparent 34rem
+    ),
+    linear-gradient(135deg, #15161a 0%, #101113 100%);
+  color: var(--text);
+}
+
+.game-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 28px clamp(16px, 4vw, 40px);
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 0 4px rgba(90, 167, 255, 0.16);
+}
+
+.identity-color.blue {
+  color: var(--blue);
+}
+
+.timer {
+  min-width: 88px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(28, 30, 34, 0.9);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.1rem;
+  font-weight: 800;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.timer.is-warning {
+  border-color: rgba(239, 68, 68, 0.78);
+  background: rgba(127, 29, 29, 0.5);
+  color: #fecaca;
+}
+
+.voice-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: minmax(260px, 1fr) minmax(260px, 1fr);
+  gap: 18px;
+  min-height: 0;
+}
+
+.player-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 260px;
+  overflow: hidden;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: linear-gradient(180deg, var(--panel-raised), var(--panel));
+  box-shadow: var(--shadow);
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.player-card.current-user {
+  grid-column: 1 / -1;
+  width: min(560px, 100%);
+  justify-self: center;
+}
+
+.player-card.is-speaking {
+  border-color: var(--speaking-color, var(--accent));
+  box-shadow:
+    0 0 0 3px var(--speaking-glow, rgba(34, 197, 94, 0.22)),
+    var(--shadow);
+}
+
+.player-card.player-red {
+  --speaking-color: var(--red);
+  --speaking-glow: rgba(255, 95, 87, 0.24);
+}
+
+.player-card.player-green {
+  --speaking-color: var(--green);
+  --speaking-glow: rgba(67, 209, 122, 0.24);
+}
+
+.player-card.player-blue {
+  --speaking-color: var(--blue);
+  --speaking-glow: rgba(90, 167, 255, 0.24);
+}
+
+.player-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.player-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.player-dot {
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.player-name.red {
+  color: var(--red);
+}
+
+.player-name.green {
+  color: var(--green);
+}
+
+.player-name.blue {
+  color: var(--blue);
+}
+
+.soundwave {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 44px;
+  height: 30px;
+  border-radius: 999px;
+  background: rgba(167, 173, 186, 0.1);
+  opacity: 0.26;
+}
+
+.soundwave span {
+  width: 4px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--speaking-color, var(--accent));
+  transform-origin: center;
+}
+
+.is-speaking .soundwave {
+  opacity: 1;
+}
+
+.is-speaking .soundwave span {
+  animation: soundwave 760ms ease-in-out infinite;
+}
+
+.is-speaking .soundwave span:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.is-speaking .soundwave span:nth-child(3) {
+  animation-delay: 240ms;
+}
+
+.is-speaking .soundwave span:nth-child(4) {
+  animation-delay: 360ms;
+}
+
+@keyframes soundwave {
+  0%,
+  100% {
+    transform: scaleY(0.75);
+  }
+
+  50% {
+    transform: scaleY(2.35);
+  }
+}
+
+.transcript {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
+  min-height: 0;
+  padding: 18px;
+  color: var(--text);
+  line-height: 1.45;
+  overflow: hidden;
+}
+
+.transcript p {
+  margin: 0;
+  max-width: 66ch;
+  color: #d9dde7;
+}
+
+.transcript p.is-current {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  padding-bottom: 4px;
+}
+
+.control-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 132px;
+  min-height: 46px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0 18px;
+  color: var(--text);
+  background: #30343c;
+  font: inherit;
+  font-weight: 800;
+  cursor: default;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.control-button:hover,
+.control-button:focus-visible {
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.control-button img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: invert(1) brightness(1.8);
+}
+
+.control-button.secondary {
+  border-color: #454b57;
+  background: #252932;
+}
+
+.control-button.secondary:hover,
+.control-button.secondary:focus-visible {
+  border-color: #8b95a7;
+  box-shadow: 0 0 0 3px rgba(139, 149, 167, 0.24);
+}
+
+.control-button.danger {
+  background: var(--danger);
+  color: #fff;
+}
+
+.control-button.danger:hover,
+.control-button.danger:focus-visible {
+  border-color: #fecaca;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.28);
+}
+
+@media (max-width: 760px) {
+  .game-shell {
+    gap: 16px;
+    padding-top: 18px;
+  }
+
+  .voice-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, minmax(220px, auto));
+  }
+
+  .player-card,
+  .player-card.current-user {
+    grid-column: auto;
+    width: 100%;
+    min-height: 220px;
+  }
+
+  .controls {
+    flex-direction: column;
+  }
+
+  .control-button {
+    width: 100%;
+  }
+}
