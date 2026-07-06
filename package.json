@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "backend": "cd server && npx nodemon --env-file=.env app.js",
     "build": "vite build",
     "lint": "eslint .",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -19,6 +22,7 @@
     "express-session": "^1.19.0",
     "google-auth-library": "^10.9.0",
     "lucide-react": "^1.23.0",
+    "prettier": "^3.9.4",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.1",
