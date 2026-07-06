@@ -4,6 +4,8 @@ const GOOGLE_LOGIN_BASE_URL =
 
 const GOOGLE_LOGIN_ENDPOINT = "/auth/google";
 
+const FAILURE_REDIRECT = import.meta.env.FRONTEND_URL ?? "http://localhost:5173";
+
 export function getGoogleLoginUrl() {
   return GOOGLE_LOGIN_BASE_URL + GOOGLE_LOGIN_ENDPOINT;
 }
@@ -19,9 +21,7 @@ export async function loginWithGoogle() {
       return;
     }
   } catch {
-    window.location.assign(loginUrl);
+    window.location.assign(FAILURE_REDIRECT);
     return;
   }
-
-  window.location.assign(loginUrl);
 }
