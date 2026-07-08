@@ -8,20 +8,8 @@ export function getGoogleLoginUrl() {
   return GOOGLE_LOGIN_BASE_URL + GOOGLE_LOGIN_ENDPOINT;
 }
 
-export async function loginWithGoogle() {
+// Google hates fetch for some reason, so just raw redirect to localhost:3000/auth/google
+export function loginWithGoogle() {
   const loginUrl = getGoogleLoginUrl();
-
-  try {
-    const res = await fetch(loginUrl, { credentials: "include" });
-
-    if (res.redirected) {
-      window.location.assign(res.url);
-      return;
-    }
-  } catch {
-    window.location.assign(loginUrl);
-    return;
-  }
-
   window.location.assign(loginUrl);
 }

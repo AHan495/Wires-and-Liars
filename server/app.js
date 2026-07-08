@@ -2,6 +2,7 @@ import express from "express";
 import session from "express-session";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
+import cors from 'cors';
 import { sequelize } from "./datasource.js";
 import { authRouter } from "./routers/auth_router.js";
 
@@ -9,6 +10,11 @@ dotenv.config();
 
 export const app = express();
 const PORT = 3000;
+
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -20,8 +26,6 @@ app.use(
     saveUninitialized: false,
   }),
 );
-
-app.use(express.static("../dist"));
 
 try {
   await sequelize.authenticate();
