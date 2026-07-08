@@ -1,11 +1,27 @@
 import { Search, Ticket, LogIn } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CreateRoomPanel from "../components/CreateRoomPanel";
-import RoomCard from "../components/RoomCard";
+import CreateRoomPanel from "../components/LobbyPage/CreateRoomPanel";
+import {
+  Field,
+  FieldLabel,
+  InlineField,
+  JoinCodeButton,
+  JoinCodeInputShell,
+  LobbyLayout,
+  LobbyMain,
+  LobbySidebar,
+  PanelHeader,
+  PanelTitle,
+  RoomList,
+  RoomListEmpty,
+  RoomsPanel,
+  RoomsToolbar,
+  TextInput,
+  InputShell,
+} from "../components/LobbyPage/LobbyPage.styles";
+import RoomCard from "../components/LobbyPage/RoomCard";
 import { sampleRooms } from "../data/rooms";
-import "../styles/lobby-page.css";
-import "../styles/cols.css";
 
 function LobbyPage() {
   // Use React Router hooks to access navigation and location state
@@ -47,71 +63,75 @@ function LobbyPage() {
   }
 
   return (
-    <main className="lobby-page">
-      <section className="lobby-layout" aria-label="Lobby layout">
-        <section className="panel rooms-panel">
-          <header className="panel-header">
+    <LobbyMain component="main">
+      <LobbyLayout component="section" aria-label="Lobby layout">
+        <RoomsPanel component="section">
+          <PanelHeader component="header">
             <div>
-              <h2>Public Rooms</h2>
+              <PanelTitle component="h2" variant="h2">
+                Public Rooms
+              </PanelTitle>
             </div>
-          </header>
+          </PanelHeader>
 
-          <div className="rooms-toolbar">
-            <label className="field field-search">
-              <span>Search rooms</span>
-              <div className="input-shell">
+          <RoomsToolbar>
+            <Field component="label">
+              <FieldLabel component="span">Search rooms</FieldLabel>
+              <InputShell>
                 <Search size={15} strokeWidth={2} />
-                <input
+                <TextInput
                   type="text"
                   placeholder="Room name, host, or code"
                   value={searchText}
                   onChange={(event) => setSearchText(event.target.value)}
                 />
-              </div>
-            </label>
-          </div>
+              </InputShell>
+            </Field>
+          </RoomsToolbar>
 
           {filteredRooms.length > 0 ? (
-            <div className="room-list">
+            <RoomList>
               {filteredRooms.map((room) => (
                 <RoomCard key={room.id} room={room} />
               ))}
-            </div>
+            </RoomList>
           ) : (
-            <p className="room-list-empty">No rooms match your search.</p>
+            <RoomListEmpty component="p" variant="body2">
+              No rooms match your search.
+            </RoomListEmpty>
           )}
 
-          <div className="rooms-toolbar">
-            <label className="field field-code">
-              <span>Join by code</span>
-              <div className="inline-field">
-                <div className="input-shell col-10">
+          <RoomsToolbar>
+            <Field component="label">
+              <FieldLabel component="span">Join by code</FieldLabel>
+              <InlineField>
+                <JoinCodeInputShell>
                   <Ticket size={15} strokeWidth={2} />
-                  <input
+                  <TextInput
                     type="text"
                     placeholder="AI-7QK9"
                     value={roomCode}
                     onChange={(event) => setRoomCode(event.target.value)}
                   />
-                </div>
-                <button
+                </JoinCodeInputShell>
+                <JoinCodeButton
                   type="button"
-                  className="button button-primary join-code-button col-2"
+                  variant="contained"
+                  startIcon={<LogIn size={14} strokeWidth={2} />}
                   onClick={handleJoinByCode}
                 >
-                  <LogIn size={14} strokeWidth={2} />
                   Join
-                </button>
-              </div>
-            </label>
-          </div>
-        </section>
+                </JoinCodeButton>
+              </InlineField>
+            </Field>
+          </RoomsToolbar>
+        </RoomsPanel>
 
-        <aside className="lobby-sidebar">
+        <LobbySidebar component="aside">
           <CreateRoomPanel onCreateRoom={openRoom} />
-        </aside>
-      </section>
-    </main>
+        </LobbySidebar>
+      </LobbyLayout>
+    </LobbyMain>
   );
 }
 
