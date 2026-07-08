@@ -1,5 +1,5 @@
 import { Box, Card, CardContent, Typography } from "@mui/material";
-import { keyframes, styled } from "@mui/material/styles";
+import { keyframes, styled } from "@mui/system";
 
 const participantAccent = {
   red: {
