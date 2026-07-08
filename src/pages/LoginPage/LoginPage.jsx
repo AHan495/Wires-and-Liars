@@ -1,7 +1,7 @@
 import { Stack } from "@mui/material";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 import { useState } from "react";
-import { loginWithGoogle } from "../services/auth-api";
+import { loginWithGoogle } from "../../services/auth-api";
 import {
   AuthHeading,
   AuthNoteRoot,

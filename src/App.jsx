@@ -1,8 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import LobbyPage from "./pages/LobbyPage";
-import LoginPage from "./pages/LoginPage";
-import MatchPage from "./pages/MatchPage";
-import RoomPage from "./pages/RoomPage";
+import LobbyPage from "./pages/LobbyPage/LobbyPage";
+import LoginPage from "./pages/LoginPage/LoginPage";
+import MatchPage from "./pages/MatchPage/MatchPage";
+import RoomPage from "./pages/RoomPage/RoomPage";
 
 function App() {
   return (
