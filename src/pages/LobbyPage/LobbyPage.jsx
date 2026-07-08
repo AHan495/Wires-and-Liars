@@ -1,7 +1,7 @@
 import { Search, Ticket, LogIn } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CreateRoomPanel from "../components/LobbyPage/CreateRoomPanel";
+import CreateRoomPanel from "./CreateRoomPanel";
 import {
   Field,
   FieldLabel,
@@ -19,9 +19,9 @@ import {
   RoomsToolbar,
   TextInput,
   InputShell,
-} from "../components/LobbyPage/LobbyPage.styles";
-import RoomCard from "../components/LobbyPage/RoomCard";
-import { sampleRooms } from "../data/rooms";
+} from "./LobbyPage.styles";
+import RoomCard from "./RoomCard";
+import { sampleRooms } from "../../data/rooms";
 
 function LobbyPage() {
   // Use React Router hooks to access navigation and location state

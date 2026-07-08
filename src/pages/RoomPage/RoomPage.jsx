@@ -27,8 +27,8 @@ import {
   RoomPlayerRole,
   RoomShell,
   RoomTitle,
-} from "../components/RoomPage/RoomPage.styles";
-import { useRoomFromLocationState } from "../utils/roomState";
+} from "./RoomPage.styles";
+import { useRoomFromLocationState } from "../../utils/roomState";
 
 function RoomPage() {
   const navigate = useNavigate();
