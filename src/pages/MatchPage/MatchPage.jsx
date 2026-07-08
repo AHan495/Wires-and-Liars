@@ -1,6 +1,6 @@
 import { LogOut, MicOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import MatchParticipantCard from "../components/MatchPage/MatchParticipantCard";
+import MatchParticipantCard from "./MatchParticipantCard";
 import {
   MatchControlDangerButton,
   MatchControlSecondaryButton,
@@ -14,8 +14,8 @@ import {
   MatchTimer,
   MatchTopBar,
   MatchVoiceGrid,
-} from "../components/MatchPage/MatchPage.styles";
-import { useRoomFromLocationState } from "../utils/roomState";
+} from "./MatchPage.styles";
+import { useRoomFromLocationState } from "../../utils/roomState";
 
 const participants = [
   {
@@ -104,7 +104,8 @@ function MatchPage() {
           <MatchIdentity>
             <MatchSwatch component="span" aria-hidden="true" />
             <MatchIdentityText component="span" variant="body1">
-              You are <MatchIdentityAccent component="span">Blue</MatchIdentityAccent>
+              You are{" "}
+              <MatchIdentityAccent component="span">Blue</MatchIdentityAccent>
             </MatchIdentityText>
           </MatchIdentity>
 

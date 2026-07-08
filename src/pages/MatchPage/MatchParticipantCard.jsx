@@ -1,5 +1,5 @@
 import { Box, Card, CardContent, Typography } from "@mui/material";
-import { keyframes, styled } from "@mui/material/styles";
+import { keyframes, styled } from "@mui/system";
 
 const participantAccent = {
   red: {
@@ -27,7 +27,9 @@ const soundwaveAnimation = keyframes`
 
 const ParticipantCardRoot = styled(Card, {
   shouldForwardProp: (prop) =>
-    !["isSpeaking", "isCurrentUser", "accentColor", "accentGlow"].includes(prop),
+    !["isSpeaking", "isCurrentUser", "accentColor", "accentGlow"].includes(
+      prop,
+    ),
 })(({ isSpeaking, isCurrentUser, accentColor, accentGlow }) => ({
   display: "flex",
   flexDirection: "column",

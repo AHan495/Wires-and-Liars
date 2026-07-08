@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { styled } from "@mui/system";
 
 export const MatchMain = styled(Box)({
   minHeight: "100vh",
