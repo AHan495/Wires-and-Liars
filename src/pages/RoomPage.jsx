@@ -84,17 +84,23 @@ function RoomPage() {
             <RoomDetailList>
               <RoomDetailItem>
                 <RoomDetailLabel component="span">Host</RoomDetailLabel>
-                <RoomDetailValue component="strong">{room.host}</RoomDetailValue>
+                <RoomDetailValue component="strong">
+                  {room.host}
+                </RoomDetailValue>
               </RoomDetailItem>
               <RoomDetailItem>
-                <RoomDetailLabel component="span">Players joined</RoomDetailLabel>
+                <RoomDetailLabel component="span">
+                  Players joined
+                </RoomDetailLabel>
                 <RoomDetailValue component="strong">
                   {room.players} / 2
                 </RoomDetailValue>
               </RoomDetailItem>
               <RoomDetailItem>
                 <RoomDetailLabel component="span">Open slots</RoomDetailLabel>
-                <RoomDetailValue component="strong">{slotsLeft}</RoomDetailValue>
+                <RoomDetailValue component="strong">
+                  {slotsLeft}
+                </RoomDetailValue>
               </RoomDetailItem>
             </RoomDetailList>
           </RoomDetailCard>

@@ -104,7 +104,8 @@ function MatchPage() {
           <MatchIdentity>
             <MatchSwatch component="span" aria-hidden="true" />
             <MatchIdentityText component="span" variant="body1">
-              You are <MatchIdentityAccent component="span">Blue</MatchIdentityAccent>
+              You are{" "}
+              <MatchIdentityAccent component="span">Blue</MatchIdentityAccent>
             </MatchIdentityText>
           </MatchIdentity>
 
