@@ -3,6 +3,8 @@ import session from "express-session";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import cors from "cors";
+import http from "http";
+import { Server } from "socket.io";
 import { sequelize } from "./datasource.js";
 import { authRouter } from "./routers/auth_router.js";
 
@@ -39,12 +41,20 @@ try {
   console.error("Unable to connect to the database:", error);
 }
 
+const httpServer = http.createServer(app);
+export const io = new Server(httpServer);
+
+app.use(function (req, res, next) {
+  req.io = io;
+  next();
+});
+
 app.use(function (req, res, next) {
   console.log("HTTP request", req.method, req.url, req.body);
   next();
 });
 
-app.listen(PORT, (err) => {
+httpServer.listen(PORT, (err) => {
   if (err) console.log(err);
   else console.log("HTTP server on http://localhost:%s", PORT);
 });
