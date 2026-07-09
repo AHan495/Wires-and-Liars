@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { sequelize } from "./datasource.js";
 import { authRouter } from "./routers/auth_router.js";
+import { billingRouter } from "./routers/billing_router.js";
 
 dotenv.config();
 
@@ -44,9 +45,10 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.use("/auth", authRouter);
+app.use("/billing", billingRouter);
+
 app.listen(PORT, (err) => {
   if (err) console.log(err);
   else console.log("HTTP server on http://localhost:%s", PORT);
 });
-
-app.use("/auth", authRouter);

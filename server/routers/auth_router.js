@@ -29,7 +29,7 @@ authRouter.get("/callback", async (req, res) => {
   });
   const { email } = verifiedToken.getPayload();
   req.session.user = { email };
-  res.redirect("http://localhost:5173/lobby");
+  res.redirect("http://localhost:5173/payment");
 });
 
 // Logs the user out via destroying session
