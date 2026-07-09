@@ -28,7 +28,25 @@ function makePrompt(chatHistory, aiColour) {
 }
 
 // Function to ask AI for a response
-async function tellAI(chatHistory, aiColour) {}
+async function tellAI(chatHistory, aiColour) {
+  const prompt = makePrompt(chatHistory, aiColour);
+
+  const response = await fetch(MODEL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.AI_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ inputs: prompt }),
+  });
+
+  const data = await response.json();
+
+  switch (MODEL) {
+    case "https://api-inference.huggingface.co/models/google/flan-t5-small":
+      return data[0]?.generated_text ?? "No Response.";
+  }
+}
 
 // User said something. Add real time integration here
 gameRouter.post("/talk", (req, res) => {});
