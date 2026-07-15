@@ -69,9 +69,48 @@ Domain name: TBA
 
 ## Running the App
 
-To run the app, you will need to configure your .env.
+### Prerequisites
 
-You need to run both the frontend (localhost:5173) and backend (localhost:3000).
-Run the backend with node app.js in the /server folder.
-Run the frontend with npm run dev in the root.
-Then visit localhost:5173.
+- Node.js (v16 or higher)
+- npm or yarn
+- Docker and Docker Compose (for local PostgreSQL)
+
+### Setup Instructions
+
+1. Install dependencies:
+   npm install
+
+2. Copy the example environment file:
+   cp server/example.env server/.env
+
+3. Update server/.env with your PostgreSQL connection details. Defaults are provided for local Docker setup.
+
+4. For local development, start the PostgreSQL container:
+   docker-compose up -d
+
+5. Run the backend (in one terminal):
+   npm run backend
+   The backend will start on localhost:3000
+
+6. Run the frontend (in another terminal):
+   npm run dev
+   The frontend will start on localhost:5173
+
+7. Visit http://localhost:5173
+
+### Database Management
+
+Stop the PostgreSQL container:
+   docker-compose down
+
+Stop PostgreSQL and remove data:
+   docker-compose down -v
+
+View PostgreSQL logs:
+   docker-compose logs postgres
+
+### Switching Database Providers
+
+To use a different PostgreSQL provider (Supabase, Railway, Render, etc.), update your .env file with the provider's connection details and restart the backend. No code changes are needed.
+
+
