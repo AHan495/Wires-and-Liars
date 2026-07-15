@@ -7,7 +7,7 @@ import http from "http";
 import { Server } from "socket.io";
 import { sequelize } from "./datasource.js";
 import { authRouter } from "./routers/auth_router.js";
-import { roomsRouter } from "./routers/room_router.js";
+import { roomsRouter } from "./routers/rooms_router.js";
 
 dotenv.config();
 
