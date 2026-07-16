@@ -15,6 +15,7 @@ import {
   MatchTopBar,
   MatchVoiceGrid,
 } from "./MatchPage.styles";
+import { leaveRoom } from "../../services/rooms-api";
 import { useRoomFromLocationState } from "../../utils/roomState";
 
 const participants = [
@@ -97,6 +98,14 @@ function MatchPage() {
   const navigate = useNavigate();
   const room = useRoomFromLocationState();
 
+  function handleLeaveGame() {
+    leaveRoom(room.id)
+      .catch(() => {})
+      .finally(() => {
+        navigate("/lobby");
+      });
+  }
+
   return (
     <MatchMain component="main">
       <MatchShell component="section" aria-label="Voice chat game room">
@@ -143,7 +152,7 @@ function MatchPage() {
             type="button"
             variant="contained"
             startIcon={<LogOut size={16} strokeWidth={2} />}
-            onClick={() => navigate("/room", { state: { room } })}
+            onClick={handleLeaveGame}
           >
             Leave game
           </MatchControlDangerButton>

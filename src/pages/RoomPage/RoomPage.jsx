@@ -232,6 +232,7 @@ function RoomPage() {
               variant="contained"
               startIcon={<Play size={14} strokeWidth={2} />}
               onClick={handleStartMatch}
+              disabled={room.players < 2}
             >
               Start
             </PrimaryButton>

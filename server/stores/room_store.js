@@ -22,7 +22,7 @@ async function saveRoom(room) {
   await redis.set(normalizedRoom.id, JSON.stringify(normalizedRoom));
 
   // maintain the public rooms index using a Redis set
-  if (normalizedRoom.public) {
+  if (normalizedRoom.public && !normalizedRoom.started) {
     await redis.sAdd("public", normalizedRoom.id);
   } else {
     await redis.sRem("public", normalizedRoom.id);
