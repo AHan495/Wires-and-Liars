@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: wires-and-liars-db
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-wires_and_liars}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-wires_and_liars}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - wires-and-liars-net
+
+volumes:
+  postgres_data:
+
+networks:
+  wires-and-liars-net:
+    driver: bridge
