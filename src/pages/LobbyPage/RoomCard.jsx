@@ -1,7 +1,6 @@
 import { KeyRound, LogIn, Radio, UserRound } from "lucide-react";
 import { Box, Button, Card, Typography } from "@mui/material";
 import { styled } from "@mui/system";
-import { useNavigate } from "react-router-dom";
 
 const RoomCardRoot = styled(Card)({
   display: "flex",
@@ -100,9 +99,7 @@ const JoinRoomButton = styled(Button)({
   },
 });
 
-function RoomCard({ room }) {
-  const navigate = useNavigate();
-
+function RoomCard({ room, onJoinRoom }) {
   return (
     <RoomCardRoot component="article" elevation={0}>
       <RoomCardMain>
@@ -136,7 +133,7 @@ function RoomCard({ room }) {
           type="button"
           variant="contained"
           startIcon={<LogIn size={14} strokeWidth={2} />}
-          onClick={() => navigate("/room", { state: { room } })}
+          onClick={() => onJoinRoom(room)}
         >
           Join room
         </JoinRoomButton>

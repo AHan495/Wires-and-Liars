@@ -3,7 +3,12 @@ const API_BASE_URL = "http://localhost:3000";
 export function getPublicRooms() {
   return fetch(`${API_BASE_URL}/rooms`, {
     credentials: "include",
-  }).then((res) => res.json())
+  }).then((res) => {
+    if (!res.ok) {
+      throw new Error();
+    }
+    return res.json();
+  });
 }
 
 export function getRoom(roomCode) {
@@ -12,7 +17,12 @@ export function getRoom(roomCode) {
     {
       credentials: "include",
     },
-  ).then((res) => res.json())
+  ).then((res) => {
+    if (!res.ok) {
+      throw new Error();
+    }
+    return res.json();
+  });
 }
 
 export function createRoom(name, isPublic) {
@@ -23,7 +33,12 @@ export function createRoom(name, isPublic) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ name, public: isPublic }),
-  }).then((res) => res.json());
+  }).then((res) => {
+    if (!res.ok) {
+      throw new Error();
+    }
+    return res.json();
+  });
 }
 
 export function joinRoom(roomCode) {
@@ -33,7 +48,12 @@ export function joinRoom(roomCode) {
       method: "POST",
       credentials: "include",
     },
-  ).then((res) => res.json());
+  ).then((res) => {
+    if (!res.ok) {
+      throw new Error();
+    }
+    return res.json();
+  });
 }
 
 export function startMatch(roomCode) {
@@ -43,5 +63,40 @@ export function startMatch(roomCode) {
       method: "POST",
       credentials: "include",
     },
-  ).then((res) => res.json());
+  ).then((res) => {
+    if (!res.ok) {
+      throw new Error();
+    }
+    return res.json();
+  });
+}
+
+export function deleteRoom(roomCode) {
+  return fetch(
+    `${API_BASE_URL}/rooms/${encodeURIComponent(roomCode)}`,
+    {
+      method: "DELETE",
+      credentials: "include",
+    },
+  ).then((res) => {
+    if (!res.ok) {
+      throw new Error();
+    }
+    return res.json();
+  });
+}
+
+export function leaveRoom(roomCode) {
+  return fetch(
+    `${API_BASE_URL}/rooms/${encodeURIComponent(roomCode)}/leave`,
+    {
+      method: "POST",
+      credentials: "include",
+    },
+  ).then((res) => {
+    if (!res.ok) {
+      throw new Error();
+    }
+    return res.json();
+  });
 }

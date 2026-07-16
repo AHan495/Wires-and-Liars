@@ -50,7 +50,7 @@ export async function getRoom(roomCode) {
 }
 
 
-export async function createRoom(hostId, roomInput) {
+export async function createRoom(roomInput) {
   let roomCode = createRoomCode();
 
   // make sure that the code is unique
@@ -59,20 +59,21 @@ export async function createRoom(hostId, roomInput) {
   }
 
   const room = {
-    id: createRoomCode(),
+    id: roomCode,
     name: roomInput.name?.trim() || "Untitled Room",
-    hostId,
+    hostname: roomInput.hostname,
+    hostId: roomInput.hostId,
     public: roomInput.public,
     started: false,
     players: 1,
-    participants: [{ userId: hostId }],
+    participants: [{ userId: roomInput.hostId, username: roomInput.hostname }],
     createdAt: new Date().toISOString(),
   };
 
   return saveRoom(room);
 }
 
-export async function joinRoom(room, userId) {
+export async function joinRoom(room, userId, username) {
   if (room.started) return null;
   if (room.participants.some((participant) => participant.userId === userId)) {
     return room;
@@ -82,7 +83,7 @@ export async function joinRoom(room, userId) {
   return saveRoom({
     ...room,
     players: room.participants.length + 1,
-    participants: [...room.participants, { userId }],
+    participants: [...room.participants, { userId, username }],
   });
 }
 

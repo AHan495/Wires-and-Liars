@@ -18,14 +18,18 @@ roomsRouter.use(isAuthenticated);
 // get all public rooms
 roomsRouter.get("/", async (req, res) => {
   const publicRooms = await getPublicRooms();
-  res.json({ publicRooms });
+  res.json({ rooms: publicRooms });
 });
 
 // create a new room
 roomsRouter.post("/", async (req, res) => {
-  const newRoom = await createRoom(req.session.userId, req.body);
+  const newRoom = await createRoom({
+    ...req.body,
+    hostId: req.session.userId, 
+    hostname: req.session.user.name,
+  });
   await broadcastRoomState(req.io, newRoom);
-  res.json({ newRoom });
+  res.json({ room: newRoom });
 });
 
 // join a specific room by code
@@ -34,12 +38,12 @@ roomsRouter.post("/:roomCode/join", async (req, res) => {
   if (!room) {
     return res.status(404).json({ error: "Room not found" });
   }
-  const updatedRoom = await joinRoom(room, req.session.userId);
+  const updatedRoom = await joinRoom(room, req.session.userId, req.session.user.name);
   if (!updatedRoom) {
     return res.status(400).json({ error: "Failed to join room" });
   }
   await broadcastRoomState(req.io, updatedRoom);
-  res.json({ updatedRoom });
+  res.json({ room: updatedRoom });
 });
 
 // leave a specific room by code
@@ -48,12 +52,17 @@ roomsRouter.post("/:roomCode/leave", async (req, res) => {
   if (!room) {
     return res.status(404).json({ error: "Room not found" });
   }
+  if (room.hostId === req.session.userId) {
+    await deleteRoom(room);
+    await broadcastRoomDeleted(req.io, room.id);
+    return res.json({ room: null, deleted: true });
+  }
   const updatedRoom = await leaveRoom(room, req.session.userId);
   if (!updatedRoom) {
     return res.status(400).json({ error: "Failed to leave room" });
   }
   await broadcastRoomState(req.io, updatedRoom);
-  res.json({ updatedRoom });
+  res.json({ room: updatedRoom });
 });
 
 // start a match in a specific room by code
@@ -73,7 +82,7 @@ roomsRouter.post("/:roomCode/start", async (req, res) => {
     return res.status(500).json({ error: "Failed to start match" });
   }
   await broadcastRoomState(req.io, updatedRoom);
-  res.json({ updatedRoom });
+  res.json({ room: updatedRoom });
 });
 
 // end a match in a specific room by code
@@ -87,7 +96,7 @@ roomsRouter.post("/:roomCode/end", async (req, res) => {
     return res.status(500).json({ error: "Failed to end match" });
   }
   await broadcastRoomState(req.io, updatedRoom);
-  res.json({ updatedRoom });
+  res.json({ room: updatedRoom });
 });
 
 // delete a specific room by code

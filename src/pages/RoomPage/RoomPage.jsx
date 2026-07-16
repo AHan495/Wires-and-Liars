@@ -1,4 +1,5 @@
-import { ArrowLeft, Play, Radio, Users } from "lucide-react";
+import { ArrowLeft, Play, Radio, Trash2, Users } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   GhostButton,
@@ -29,11 +30,89 @@ import {
   RoomTitle,
 } from "./RoomPage.styles";
 import { useRoomFromLocationState } from "../../utils/roomState";
+import {
+  deleteRoom,
+  getRoom,
+  leaveRoom,
+  startMatch,
+} from "../../services/rooms-api";
+import { subscribeToRoom } from "../../services/rooms-socket";
+import { getCurrentUser } from "../../services/auth-api";
+
+function getParticipantRole(room, participant) {
+  if (participant.userId === room.hostId) {
+    return "Host";
+  }
+  return "Player";
+}
 
 function RoomPage() {
   const navigate = useNavigate();
-  const room = useRoomFromLocationState();
-  const slotsLeft = Math.max(0, 2 - room.players);
+  const initialRoom = useRoomFromLocationState();
+  const [room, setRoom] = useState(initialRoom);
+  const [currentUserId, setCurrentUserId] = useState(null);
+
+  useEffect(() => {
+    if (!room.id) return undefined;
+
+    getRoom(room.id)
+      .then((res) => {
+        if (res.room?.started) {
+          navigate("/match", { state: { room: res.room } });
+          return;
+        }
+        setRoom(res.room);
+      })
+      .catch(() => {
+        navigate("/lobby");
+      });
+
+    getCurrentUser()
+      .then((res) => {
+        setCurrentUserId(res.userId);
+      })
+      .catch(() => {
+        navigate("/login");
+      })
+
+    const unsubscribe = subscribeToRoom(room.id, {
+      onRoomUpdated: (updatedRoom) => {
+        if (updatedRoom.started) {
+          navigate("/match", { state: { room: updatedRoom } });
+          return;
+        }
+        setRoom(updatedRoom);
+      },
+      onRoomDeleted: () => {
+        navigate("/lobby");
+      },
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [navigate, room.id]);
+
+  function handleStartMatch() {
+    startMatch(room.id)
+      .then((res) => {
+        navigate("/match", { state: { room: res.room } });
+      });
+  }
+
+  function handleDeleteRoom() {
+    deleteRoom(room.id)
+      .then(() => {
+        navigate("/lobby");
+      });
+  }
+
+  function handleBackToLobby() {
+    leaveRoom(room.id)
+      .then(() => {
+        navigate("/lobby");
+      });
+  }
 
   return (
     <RoomMain component="main">
@@ -43,10 +122,20 @@ function RoomPage() {
             type="button"
             variant="outlined"
             startIcon={<ArrowLeft size={14} strokeWidth={2} />}
-            onClick={() => navigate("/lobby")}
+            onClick={handleBackToLobby}
           >
             Back to lobby
           </GhostButton>
+          {currentUserId === room.hostId ? (
+            <GhostButton
+              type="button"
+              variant="outlined"
+              startIcon={<Trash2 size={14} strokeWidth={2} />}
+              onClick={handleDeleteRoom}
+            >
+              Delete room
+            </GhostButton>
+          ) : null}
         </RoomHeader>
 
         <RoomHero component="section">
@@ -85,7 +174,7 @@ function RoomPage() {
               <RoomDetailItem>
                 <RoomDetailLabel component="span">Host</RoomDetailLabel>
                 <RoomDetailValue component="strong">
-                  {room.host}
+                  {room.hostname}
                 </RoomDetailValue>
               </RoomDetailItem>
               <RoomDetailItem>
@@ -99,7 +188,7 @@ function RoomPage() {
               <RoomDetailItem>
                 <RoomDetailLabel component="span">Open slots</RoomDetailLabel>
                 <RoomDetailValue component="strong">
-                  {slotsLeft}
+                  {Math.max(0, 2 - (room.players ?? 0))}
                 </RoomDetailValue>
               </RoomDetailItem>
             </RoomDetailList>
@@ -114,29 +203,39 @@ function RoomPage() {
             </RoomDetailHeading>
 
             <RoomDetailList>
-              <RoomPlayerCard>
-                <RoomPlayerName component="span">{room.host}</RoomPlayerName>
-                <RoomPlayerRole component="span">Host</RoomPlayerRole>
-              </RoomPlayerCard>
-              <RoomPlayerCard empty>
-                <RoomPlayerName component="span">
-                  Waiting for player 2
-                </RoomPlayerName>
-                <RoomPlayerRole component="span">Open slot</RoomPlayerRole>
-              </RoomPlayerCard>
+              {room.participants.map((participant) => (
+                <RoomPlayerCard key={participant.userId}>
+                  <RoomPlayerName component="span">
+                    {participant.username}
+                  </RoomPlayerName>
+                  <RoomPlayerRole component="span">
+                    {getParticipantRole(room, participant)}
+                  </RoomPlayerRole>
+                </RoomPlayerCard>
+              ))}
+              {room.participants.length < 2 ? (
+                <RoomPlayerCard empty>
+                  <RoomPlayerName component="span">
+                    Waiting for player 2
+                  </RoomPlayerName>
+                  <RoomPlayerRole component="span">Open slot</RoomPlayerRole>
+                </RoomPlayerCard>
+              ) : null}
             </RoomDetailList>
           </RoomDetailCard>
         </RoomGrid>
 
         <RoomActions component="footer">
-          <PrimaryButton
-            type="button"
-            variant="contained"
-            startIcon={<Play size={14} strokeWidth={2} />}
-            onClick={() => navigate("/match", { state: { room } })}
-          >
-            Start
-          </PrimaryButton>
+          {currentUserId === room.hostId ? (
+            <PrimaryButton
+              type="button"
+              variant="contained"
+              startIcon={<Play size={14} strokeWidth={2} />}
+              onClick={handleStartMatch}
+            >
+              Start
+            </PrimaryButton>
+          ) : null}
         </RoomActions>
       </RoomShell>
     </RoomMain>
