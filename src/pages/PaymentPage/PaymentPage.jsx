@@ -39,9 +39,7 @@ function PaymentPage() {
             <PriceInterval component="span">per month</PriceInterval>
           </PriceBlock>
 
-          <CheckoutForm
-            onSubmit={() => setIsCheckoutLoading(true)}
-          >
+          <CheckoutForm onSubmit={() => setIsCheckoutLoading(true)}>
             <CheckoutButton
               type="submit"
               variant="contained"

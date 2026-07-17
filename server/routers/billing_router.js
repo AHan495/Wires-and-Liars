@@ -15,7 +15,7 @@ const REDIRECT_BASE_URL = "http://localhost:5173";
 const SUBSCRIPTION_PRICE_LOOKUP_KEY = "monthly_subscription";
 
 billingRouter.post("/create-checkout-session", async (req, res) => {
-  // TODO: check user is authenticated, maybe also pass their email/user ID 
+  // TODO: check user is authenticated, maybe also pass their email/user ID
   const prices = await stripe.prices.list({
     lookup_keys: [SUBSCRIPTION_PRICE_LOOKUP_KEY],
     expand: ["data.product"],
