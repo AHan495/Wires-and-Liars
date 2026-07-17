@@ -39,7 +39,7 @@ function LoginPage() {
             <Stack spacing={1.5}>
               <Eyebrow>Wires and Liars</Eyebrow>
               <LoginTitle component="h1">
-                Read the room before it reads you.
+                Read the room before it reads you
               </LoginTitle>
             </Stack>
           </Stack>
