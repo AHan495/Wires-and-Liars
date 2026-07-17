@@ -39,6 +39,10 @@ export const SummaryPanel = styled(Box)({
   gap: "16px",
 });
 
+export const CheckoutFormRoot = styled(Box)({
+  width: "100%",
+});
+
 export const PaymentHeader = styled(Box)({
   display: "flex",
   flexDirection: "column",

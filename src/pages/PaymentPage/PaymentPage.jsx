@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { CheckCircle2, Lock } from "lucide-react";
-import { useCheckoutRedirect } from "../../hooks/useCheckoutRedirect";
+import CheckoutForm from "./CheckoutForm";
 import {
   CheckoutButton,
   PaymentDescription,
@@ -17,8 +18,7 @@ import {
 } from "./PaymentPage.styles";
 
 function PaymentPage() {
-  const { hasCheckoutError, isCheckoutLoading, startCheckout } =
-    useCheckoutRedirect();
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
 
   return (
     <PaymentMain component="main">
@@ -29,8 +29,7 @@ function PaymentPage() {
           </PaymentEyebrow>
           <PaymentTitle component="h1">Subscribe to play</PaymentTitle>
           <PaymentDescription component="p">
-            A monthly subscription is required after login before entering the
-            lobby.
+            A monthly subscription is required to play.
           </PaymentDescription>
         </PaymentHeader>
 
@@ -40,21 +39,20 @@ function PaymentPage() {
             <PriceInterval component="span">per month</PriceInterval>
           </PriceBlock>
 
-          <CheckoutButton
-            type="button"
-            variant="contained"
-            onClick={startCheckout}
-            disabled={isCheckoutLoading}
-            startIcon={<CheckCircle2 size={17} strokeWidth={2.2} />}
+          <CheckoutForm
+            onSubmit={() => setIsCheckoutLoading(true)}
           >
-            {isCheckoutLoading ? "Loading checkout..." : "Continue to Stripe"}
-          </CheckoutButton>
-
-          {hasCheckoutError && (
-            <SummaryText component="p" role="alert">
-              Checkout error. Please try again.
-            </SummaryText>
-          )}
+            <CheckoutButton
+              type="submit"
+              variant="contained"
+              disabled={isCheckoutLoading}
+              startIcon={<CheckCircle2 size={17} strokeWidth={2.2} />}
+            >
+              {isCheckoutLoading
+                ? "Starting checkout..."
+                : "Continue to Stripe"}
+            </CheckoutButton>
+          </CheckoutForm>
 
           <SecureNote>
             <Lock size={16} strokeWidth={2.2} aria-hidden="true" />

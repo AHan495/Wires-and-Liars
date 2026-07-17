@@ -3,6 +3,7 @@ import LobbyPage from "./pages/LobbyPage/LobbyPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import MatchPage from "./pages/MatchPage/MatchPage";
 import PaymentPage from "./pages/PaymentPage/PaymentPage";
+import PaymentSuccessPage from "./pages/PaymentPage/PaymentSuccessPage";
 import RoomPage from "./pages/RoomPage/RoomPage";
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/lobby" element={<LobbyPage />} />
       <Route path="/payment" element={<PaymentPage />} />
+      <Route path="/payment/success" element={<PaymentSuccessPage />} />
       <Route path="/room" element={<RoomPage />} />
       <Route path="/match" element={<MatchPage />} />
     </Routes>
