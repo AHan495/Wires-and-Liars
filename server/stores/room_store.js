@@ -37,6 +37,7 @@ function assignMatchParticipants(room) {
     {
       userId: "ai",
       color: colors[2],
+      isAI: true,
     },
   ];
 
@@ -150,7 +151,19 @@ export async function startMatch(room) {
     ...room,
     started: true,
     matchParticipants: assignMatchParticipants(room),
+    messages: room.messages ?? [],
   });
+}
+
+// Update messages
+export async function appendMatchMessage(room, message) {
+  const updatedRoom = {
+    ...room,
+    messages: [...(room.messages ?? []), message],
+  };
+
+  await saveRoom(updatedRoom);
+  return updatedRoom;
 }
 
 export async function endMatch(room) {

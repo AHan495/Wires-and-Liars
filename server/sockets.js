@@ -1,5 +1,5 @@
 import { getPublicRooms, getRoom } from "./stores/room_store.js";
-import crypto from "crypto";
+import { handleMatchMessage } from "./routers/game_router.js";
 
 export async function broadcastRoomState(io, room) {
   io.to(`${room.id}`).emit("updatedRoom", room);
@@ -41,10 +41,8 @@ export function registerIOListeners(io) {
     socket.on("sendMatchMessage", ({ roomCode, message }) => {
       if (!roomCode || !message?.text) return;
 
-      io.to(`${roomCode}`).emit("matchMessage", {
-        ...message,
-        id: message.id ?? crypto.randomUUID(),
-        createdAt: message.createdAt ?? new Date().toISOString(),
+      handleMatchMessage(io, roomCode, message).catch((error) => {
+        console.error("Failed to handle match message:", error);
       });
     });
 

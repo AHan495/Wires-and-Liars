@@ -22,7 +22,7 @@ import {
   MatchTopBar,
   MatchVoiceGrid,
 } from "./MatchPage.styles";
-import { leaveRoom } from "../../services/rooms-api";
+import { getRoom, leaveRoom } from "../../services/rooms-api";
 import { getCurrentUser } from "../../services/auth-api";
 import {
   sendMatchMessage,
@@ -30,11 +30,6 @@ import {
 } from "../../services/rooms-socket";
 import { useRoomFromLocationState } from "../../utils/roomState";
 import { useVoiceIO } from "../../hooks/useVoiceIO";
-
-// Message id generator
-function createMessageId() {
-  return crypto.randomUUID();
-}
 
 // Color themes of players (2 human + 1 AI)
 const participantAccent = {
@@ -76,10 +71,8 @@ function MatchPage() {
     if (!room?.id || !text.trim()) return;
 
     sendMatchMessage(room.id, {
-      id: createMessageId(),
       senderId: currentUserIdRef.current,
       text,
-      createdAt: new Date().toISOString(),
     });
   }
 
@@ -107,6 +100,12 @@ function MatchPage() {
       navigate("/lobby");
       return undefined;
     }
+
+    getRoom(room.id)
+      .then((res) => {
+        setMessages(res.room.messages ?? []);
+      })
+      .catch(() => {});
 
     return subscribeToMatchMessages(room.id, (message) => {
       setMessages((currentMessages) => [...currentMessages, message]);

@@ -23,6 +23,7 @@
     "express-session": "^1.19.0",
     "google-auth-library": "^10.9.0",
     "lucide-react": "^1.23.0",
+    "openai": "^6.48.0",
     "pg": "^8.12.0",
     "prettier": "^3.9.4",
     "react": "^19.2.7",
