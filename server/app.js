@@ -76,7 +76,7 @@ app.use("/auth", authRouter);
 app.use("/billing", billingRouter);
 app.use("/rooms", roomsRouter);
 
-app.listen(PORT, (err) => {
+httpServer.listen(PORT, (err) => {
   if (err) console.log(err);
   else console.log("HTTP server on http://localhost:%s", PORT);
 });
