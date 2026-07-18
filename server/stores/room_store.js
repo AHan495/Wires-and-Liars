@@ -2,13 +2,55 @@ import crypto from "crypto";
 import { redis } from "../redis.js";
 
 const MAX_PLAYERS = 2;
+const MATCH_COLORS = ["red", "blue", "green"];
 
 function normalizeRoomCode(roomCode) {
   return roomCode.trim().toUpperCase();
 }
 
+// 2 bytes = 4 hex characters
 function createRoomCode() {
   return `RM-${crypto.randomBytes(2).toString("hex").toUpperCase()}`;
+}
+
+// Fisher–Yates shuffle (https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle)
+// Helper to assign random colors to players
+function shuffledColors() {
+  const colors = [...MATCH_COLORS];
+
+  for (let index = colors.length - 1; index > 0; index -= 1) {
+    const swapIndex = crypto.randomInt(index + 1);
+    [colors[index], colors[swapIndex]] = [colors[swapIndex], colors[index]];
+  }
+
+  return colors;
+}
+
+// Random colors are assigned here
+function assignMatchParticipants(room) {
+  const colors = shuffledColors();
+  const participants = [
+    ...room.participants.map((participant, index) => ({
+      userId: participant.userId,
+      color: colors[index]
+    })),
+    {
+      userId: "ai",
+      color: colors[2],
+    },
+  ];
+
+  // Fisher–Yates shuffle again (https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle)
+  // Shuffle index so the location of the players in the frontend is randomized
+  for (let index = participants.length - 1; index > 0; index -= 1) {
+    const swapIndex = crypto.randomInt(index + 1);
+    [participants[index], participants[swapIndex]] = [
+      participants[swapIndex],
+      participants[index],
+    ];
+  }
+
+  return participants;
 }
 
 async function saveRoom(room) {
@@ -18,10 +60,10 @@ async function saveRoom(room) {
     updatedAt: new Date().toISOString(),
   };
 
-  // save the full room details (id is the key)
+  // Save the full room details (id is the key)
   await redis.set(normalizedRoom.id, JSON.stringify(normalizedRoom));
 
-  // maintain the public rooms index using a Redis set
+  // Maintain the public rooms index using a Redis set
   if (normalizedRoom.public && !normalizedRoom.started) {
     await redis.sAdd("public", normalizedRoom.id);
   } else {
@@ -32,11 +74,11 @@ async function saveRoom(room) {
 }
 
 export async function getPublicRooms() {
-  // fetch all room ids currently listed in the public set index
+  // Fetch all room ids currently listed in the public set index
   const roomCodes = await redis.sMembers("public");
   if (roomCodes.length === 0) return [];
 
-  // batch-fetch all room data payloads simultaneously
+  // Batch-fetch all room data payloads simultaneously
   const rawRooms = await redis.mGet(roomCodes);
 
   return rawRooms.filter(Boolean).map((rawRoom) => JSON.parse(rawRoom));
@@ -53,7 +95,7 @@ export async function getRoom(roomCode) {
 export async function createRoom(roomInput) {
   let roomCode = createRoomCode();
 
-  // make sure that the code is unique
+  // Make sure that the code is unique
   while (await redis.exists(roomCode)) {
     roomCode = createRoomCode();
   }
@@ -105,7 +147,11 @@ export async function leaveRoom(room, userId) {
 }
 
 export async function startMatch(room) {
-  return saveRoom({ ...room, started: true });
+  return saveRoom({
+    ...room,
+    started: true,
+    matchParticipants: assignMatchParticipants(room),
+  });
 }
 
 export async function endMatch(room) {

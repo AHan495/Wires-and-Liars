@@ -53,7 +53,20 @@ function RoomPage() {
   const [currentUserId, setCurrentUserId] = useState(null);
 
   useEffect(() => {
-    if (!room.id) return undefined;
+    getCurrentUser()
+      .then((res) => {
+        setCurrentUserId(res.userId);
+      })
+      .catch(() => {
+        navigate("/login");
+      });
+  }, [navigate]);
+
+  useEffect(() => {
+    if (!room?.id) {
+      navigate("/lobby");
+      return undefined;
+    }
 
     getRoom(room.id)
       .then((res) => {
@@ -66,14 +79,6 @@ function RoomPage() {
       .catch(() => {
         navigate("/lobby");
       });
-
-    getCurrentUser()
-      .then((res) => {
-        setCurrentUserId(res.userId);
-      })
-      .catch(() => {
-        navigate("/login");
-      })
 
     const unsubscribe = subscribeToRoom(room.id, {
       onRoomUpdated: (updatedRoom) => {
@@ -91,9 +96,11 @@ function RoomPage() {
     return () => {
       unsubscribe();
     };
-  }, [navigate, room.id]);
+  }, [navigate, room?.id]);
 
   function handleStartMatch() {
+    if (!room?.id) return;
+
     startMatch(room.id)
       .then((res) => {
         navigate("/match", { state: { room: res.room } });
@@ -101,6 +108,8 @@ function RoomPage() {
   }
 
   function handleDeleteRoom() {
+    if (!room?.id) return;
+
     deleteRoom(room.id)
       .then(() => {
         navigate("/lobby");
@@ -108,10 +117,19 @@ function RoomPage() {
   }
 
   function handleBackToLobby() {
+    if (!room?.id) {
+      navigate("/lobby");
+      return;
+    }
+
     leaveRoom(room.id)
       .then(() => {
         navigate("/lobby");
       });
+  }
+
+  if (!room) {
+    return null;
   }
 
   return (

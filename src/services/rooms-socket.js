@@ -2,11 +2,11 @@ import { io } from "socket.io-client";
 
 const SOCKET_BASE_URL = "http://localhost:3000";
 
-// singleton
+// Singleton
 let roomsSocket;
 
 export function getRoomsSocket() {
-  // create a single connection
+  // Create a single connection
   if (!roomsSocket) {
     roomsSocket = io(SOCKET_BASE_URL, {
       withCredentials: true,
@@ -19,10 +19,10 @@ export function getRoomsSocket() {
 
 export function subscribeToPublicRooms(onPublicRoomsUpdated) {
   const socket = getRoomsSocket();
-  // run onPublicRoomsUpdated when receiving updatedPublicRoom
+  // Run onPublicRoomsUpdated when receiving updatedPublicRoom
   socket.on("updatedPublicRoom", onPublicRoomsUpdated);
 
-  // return unsubscribe cleanup function
+  // Return unsubscribe cleanup function
   return () => {
     socket.off("updatedPublicRoom", onPublicRoomsUpdated);
   };
@@ -31,10 +31,10 @@ export function subscribeToPublicRooms(onPublicRoomsUpdated) {
 export function subscribeToRoom(roomCode, { onRoomUpdated, onRoomDeleted }) {
   const socket = getRoomsSocket();
 
-  // notify server to join the specified room
+  // Notify server to join the specified room
   socket.emit("joinRoom", { roomCode });
 
-  // register event listeners
+  // Register event listeners
   if (onRoomUpdated) {
     socket.on("updatedRoom", onRoomUpdated);
   }
@@ -43,7 +43,7 @@ export function subscribeToRoom(roomCode, { onRoomUpdated, onRoomDeleted }) {
     socket.on("deletedRoom", onRoomDeleted);
   }
 
-  // return cleanup function to leave room
+  // Return cleanup function to leave room
   return () => {
     socket.emit("leaveRoom", { roomCode });
 
@@ -55,4 +55,24 @@ export function subscribeToRoom(roomCode, { onRoomUpdated, onRoomDeleted }) {
       socket.off("deletedRoom", onRoomDeleted);
     }
   };
+}
+
+export function subscribeToMatchMessages(roomCode, onMatchMessage) {
+  const socket = getRoomsSocket();
+
+  socket.emit("joinRoom", { roomCode });
+
+  // Run onMatchMessage (function to update messages) when receiving "matchMessage"
+  socket.on("matchMessage", onMatchMessage);
+
+  // Return cleanup function
+  return () => {
+    socket.off("matchMessage", onMatchMessage);
+    socket.emit("leaveRoom", { roomCode });
+  };
+}
+
+export function sendMatchMessage(roomCode, message) {
+  // Send my message to the server
+  getRoomsSocket().emit("sendMatchMessage", { roomCode, message });
 }

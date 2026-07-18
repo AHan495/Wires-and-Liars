@@ -27,13 +27,14 @@ const soundwaveAnimation = keyframes`
 
 const ParticipantCardRoot = styled(Card, {
   shouldForwardProp: (prop) =>
-    !["isSpeaking", "isCurrentUser", "accentColor", "accentGlow"].includes(
+    !["isSpeaking", "accentColor", "accentGlow"].includes(
       prop,
     ),
-})(({ isSpeaking, isCurrentUser, accentColor, accentGlow }) => ({
+})(({ isSpeaking, accentColor, accentGlow }) => ({
   display: "flex",
   flexDirection: "column",
-  minHeight: 250,
+  height: "100%",
+  minHeight: 0,
   overflow: "hidden",
   border: "1px solid var(--border)",
   borderRadius: "14px",
@@ -41,23 +42,14 @@ const ParticipantCardRoot = styled(Card, {
   color: "var(--text)",
   transition: "border-color 140ms ease, box-shadow 140ms ease",
   boxShadow: "none",
-  ...(isCurrentUser && {
-    gridColumn: "1 / -1",
-    width: "min(560px, 100%)",
-    justifySelf: "center",
-  }),
   ...(isSpeaking && {
     borderColor: accentColor,
     boxShadow: `0 0 0 3px ${accentGlow}`,
   }),
-  "@media (max-width: 960px)": {
-    width: "100%",
-    gridColumn: "auto",
-    minHeight: 220,
-  },
 }));
 
 const ParticipantHeader = styled(Box)({
+  flex: "0 0 auto",
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
@@ -119,24 +111,29 @@ const Soundwave = styled(Box, {
 const TranscriptContent = styled(CardContent)({
   flex: 1,
   minHeight: 0,
+  height: "100%",
   display: "flex",
   flexDirection: "column",
-  justifyContent: "flex-end",
+  justifyContent: "flex-start",
   gap: "10px",
   padding: "16px",
+  overflowY: "auto",
   "&.MuiCardContent-root:last-child": {
     paddingBottom: "16px",
   },
 });
 
 const TranscriptLine = styled(Typography, {
-  shouldForwardProp: (prop) => prop !== "isCurrent",
-})(({ isCurrent }) => ({
+  shouldForwardProp: (prop) => !["isLatest", "accentGlow"].includes(prop),
+})(({ isLatest, accentGlow }) => ({
   margin: 0,
+  padding: isLatest ? "8px 10px" : 0,
+  borderRadius: isLatest ? "10px" : 0,
+  backgroundColor: isLatest ? accentGlow : "transparent",
   fontFamily: "inherit",
   lineHeight: 1.45,
-  color: isCurrent ? "var(--text)" : "var(--muted)",
-  fontWeight: isCurrent ? 600 : 400,
+  color: isLatest ? "var(--text)" : "var(--muted)",
+  fontWeight: isLatest ? 700 : 400,
 }));
 
 const ParticipantLabel = styled(Typography)({
@@ -149,17 +146,19 @@ function MatchParticipantCard({ participant, results }) {
   const orderedResults = [...results].sort(
     (left, right) => left.resultIndex - right.resultIndex,
   );
-  const accent = participantAccent[participant.id] ?? participantAccent.blue;
+  const accent =
+    participantAccent[participant.color] ??
+    participantAccent[participant.id] ??
+    participantAccent.blue;
 
   return (
     <ParticipantCardRoot
       component="article"
       elevation={0}
       isSpeaking={participant.isSpeaking}
-      isCurrentUser={participant.isCurrentUser}
       accentColor={accent.color}
       accentGlow={accent.glow}
-      aria-label={`${participant.label} player${participant.isCurrentUser ? " current user" : ""}${participant.isSpeaking ? " speaking" : ""}`}
+      aria-label={`${participant.label} player${participant.isSpeaking ? " speaking" : ""}`}
     >
       <ParticipantHeader>
         <ParticipantName accentColor={accent.color}>
@@ -187,9 +186,10 @@ function MatchParticipantCard({ participant, results }) {
             key={`${participant.id}-${result.resultIndex}`}
             component="p"
             variant="body2"
-            isCurrent={!result.isFinal}
+            isLatest={result.isActive}
+            accentGlow={accent.glow}
           >
-            {result.alternatives[0]?.transcript}
+            {result.text}
           </TranscriptLine>
         ))}
       </TranscriptContent>
