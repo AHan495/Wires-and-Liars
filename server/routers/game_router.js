@@ -24,7 +24,10 @@ function makePrompt(chatHistory, aiColour) {
         .map((msg) => `${msg.speaker}: ${msg.message}`)
         .join("\n");
       return [
-        { role: "system", content: `${SYSTEM_PROMPT} You are playing as ${aiColour}.` },
+        {
+          role: "system",
+          content: `${SYSTEM_PROMPT} You are playing as ${aiColour}.`,
+        },
         { role: "user", content: `${convertedHistory}\n${aiColour}:` },
       ];
       break;
@@ -35,19 +38,22 @@ function makePrompt(chatHistory, aiColour) {
 async function tellAI(chatHistory, aiColour) {
   switch (MODEL) {
     case "meta-llama/Llama-3.2-1B-Instruct:featherless-ai":
-    const messages = makePrompt(chatHistory, aiColour);
+      const messages = makePrompt(chatHistory, aiColour);
 
-    const response = await fetch("https://router.huggingface.co/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.AI_TOKEN}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ model: MODEL, messages: messages }),
-    });
+      const response = await fetch(
+        "https://router.huggingface.co/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${process.env.AI_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ model: MODEL, messages: messages }),
+        },
+      );
 
-    const data = await response.json();
-    return data.choices?.[0]?.message?.content ?? "No Response.";
+      const data = await response.json();
+      return data.choices?.[0]?.message?.content ?? "No Response.";
   }
 }
 

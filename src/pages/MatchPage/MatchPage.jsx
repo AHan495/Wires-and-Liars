@@ -127,23 +127,23 @@ function MatchPage() {
   }, [navigate, room?.id, speak]);
 
   // Set participants for UI
-  const participants = (room?.matchParticipants ?? []).map(
-    (participant) => ({
-      id: participant.userId,
-      color: participant.color,
-      label: participant.label ?? participant.color,
-      accentColor: participantAccent[participant.color]?.color,
-      accentGlow: participantAccent[participant.color]?.glow,
-      isSpeaking:
-        activeSpeakerId === participant.userId ||
-        (isListening && currentUser.userId === participant.userId),
-      isCurrentUser: currentUser.userId === participant.userId,
-    }),
-  );
+  const participants = (room?.matchParticipants ?? []).map((participant) => ({
+    id: participant.userId,
+    color: participant.color,
+    label: participant.label ?? participant.color,
+    accentColor: participantAccent[participant.color]?.color,
+    accentGlow: participantAccent[participant.color]?.glow,
+    isSpeaking:
+      activeSpeakerId === participant.userId ||
+      (isListening && currentUser.userId === participant.userId),
+    isCurrentUser: currentUser.userId === participant.userId,
+  }));
 
   // Get the owner of the message
   function getParticipantForMessage(message) {
-    return participants.find((participant) => participant.id === message.senderId);
+    return participants.find(
+      (participant) => participant.id === message.senderId,
+    );
   }
 
   // Format messages for UI
@@ -165,10 +165,9 @@ function MatchPage() {
       return;
     }
 
-    leaveRoom(room.id)
-      .then(() => {
-        navigate("/lobby");
-      });
+    leaveRoom(room.id).then(() => {
+      navigate("/lobby");
+    });
   }
 
   if (!room) {

@@ -32,7 +32,7 @@ function assignMatchParticipants(room) {
   const participants = [
     ...room.participants.map((participant, index) => ({
       userId: participant.userId,
-      color: colors[index]
+      color: colors[index],
     })),
     {
       userId: "ai",
@@ -90,7 +90,6 @@ export async function getRoom(roomCode) {
 
   return rawRoom ? JSON.parse(rawRoom) : null;
 }
-
 
 export async function createRoom(roomInput) {
   let roomCode = createRoomCode();

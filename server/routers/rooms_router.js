@@ -25,7 +25,7 @@ roomsRouter.get("/", async (req, res) => {
 roomsRouter.post("/", async (req, res) => {
   const newRoom = await createRoom({
     ...req.body,
-    hostId: req.session.userId, 
+    hostId: req.session.userId,
     hostname: req.session.user.name,
   });
   await broadcastRoomState(req.io, newRoom);
@@ -38,7 +38,11 @@ roomsRouter.post("/:roomCode/join", async (req, res) => {
   if (!room) {
     return res.status(404).json({ error: "Room not found" });
   }
-  const updatedRoom = await joinRoom(room, req.session.userId, req.session.user.name);
+  const updatedRoom = await joinRoom(
+    room,
+    req.session.userId,
+    req.session.user.name,
+  );
   if (!updatedRoom) {
     return res.status(400).json({ error: "Failed to join room" });
   }

@@ -16,7 +16,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import { createRoom } from "../../services/rooms-api";
 
-
 const SwitchField = styled(Box)({
   display: "flex",
   alignItems: "center",
@@ -51,8 +50,8 @@ function CreateRoomPanel() {
         navigate("/room", { state: { room: res.room } });
       })
       .finally(() => {
-        setIsCreating(false)
-      })
+        setIsCreating(false);
+      });
   }
 
   return (

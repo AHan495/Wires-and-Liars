@@ -21,10 +21,7 @@ import {
   InputShell,
 } from "./LobbyPage.styles";
 import RoomCard from "./RoomCard";
-import {
-  getPublicRooms,
-  joinRoom,
-} from "../../services/rooms-api";
+import { getPublicRooms, joinRoom } from "../../services/rooms-api";
 import { subscribeToPublicRooms } from "../../services/rooms-socket";
 
 function getRoomSearchValues(room) {
@@ -43,16 +40,18 @@ function LobbyPage() {
   useEffect(() => {
     let isMounted = true;
 
-    getPublicRooms().then((res) => {
-      if (isMounted) {
-        setRooms(res.rooms);
-        setErrorMessage("");
-      }
-    }).catch((error) => {
-      if (isMounted) {
-        setErrorMessage(error.message);
-      }
-    });
+    getPublicRooms()
+      .then((res) => {
+        if (isMounted) {
+          setRooms(res.rooms);
+          setErrorMessage("");
+        }
+      })
+      .catch((error) => {
+        if (isMounted) {
+          setErrorMessage(error.message);
+        }
+      });
 
     const unsubscribe = subscribeToPublicRooms(({ publicRooms }) => {
       setRooms(publicRooms);

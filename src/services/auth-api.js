@@ -17,11 +17,10 @@ export function loginWithGoogle() {
 export function getCurrentUser() {
   return fetch(`${GOOGLE_LOGIN_BASE_URL}/auth/me`, {
     credentials: "include",
-  })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error();
-      }
-      return res.json();
-    });
+  }).then((res) => {
+    if (!res.ok) {
+      throw new Error();
+    }
+    return res.json();
+  });
 }

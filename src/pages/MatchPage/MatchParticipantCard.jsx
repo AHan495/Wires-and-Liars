@@ -27,9 +27,7 @@ const soundwaveAnimation = keyframes`
 
 const ParticipantCardRoot = styled(Card, {
   shouldForwardProp: (prop) =>
-    !["isSpeaking", "accentColor", "accentGlow"].includes(
-      prop,
-    ),
+    !["isSpeaking", "accentColor", "accentGlow"].includes(prop),
 })(({ isSpeaking, accentColor, accentGlow }) => ({
   display: "flex",
   flexDirection: "column",

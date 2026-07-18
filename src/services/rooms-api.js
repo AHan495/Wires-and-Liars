@@ -12,12 +12,9 @@ export function getPublicRooms() {
 }
 
 export function getRoom(roomCode) {
-  return fetch(
-    `${API_BASE_URL}/rooms/${encodeURIComponent(roomCode)}`,
-    {
-      credentials: "include",
-    },
-  ).then((res) => {
+  return fetch(`${API_BASE_URL}/rooms/${encodeURIComponent(roomCode)}`, {
+    credentials: "include",
+  }).then((res) => {
     if (!res.ok) {
       throw new Error();
     }
@@ -42,13 +39,10 @@ export function createRoom(name, isPublic) {
 }
 
 export function joinRoom(roomCode) {
-  return fetch(
-    `${API_BASE_URL}/rooms/${encodeURIComponent(roomCode)}/join`,
-    {
-      method: "POST",
-      credentials: "include",
-    },
-  ).then((res) => {
+  return fetch(`${API_BASE_URL}/rooms/${encodeURIComponent(roomCode)}/join`, {
+    method: "POST",
+    credentials: "include",
+  }).then((res) => {
     if (!res.ok) {
       throw new Error();
     }
@@ -57,13 +51,10 @@ export function joinRoom(roomCode) {
 }
 
 export function startMatch(roomCode) {
-  return fetch(
-    `${API_BASE_URL}/rooms/${encodeURIComponent(roomCode)}/start`,
-    {
-      method: "POST",
-      credentials: "include",
-    },
-  ).then((res) => {
+  return fetch(`${API_BASE_URL}/rooms/${encodeURIComponent(roomCode)}/start`, {
+    method: "POST",
+    credentials: "include",
+  }).then((res) => {
     if (!res.ok) {
       throw new Error();
     }
@@ -72,13 +63,10 @@ export function startMatch(roomCode) {
 }
 
 export function deleteRoom(roomCode) {
-  return fetch(
-    `${API_BASE_URL}/rooms/${encodeURIComponent(roomCode)}`,
-    {
-      method: "DELETE",
-      credentials: "include",
-    },
-  ).then((res) => {
+  return fetch(`${API_BASE_URL}/rooms/${encodeURIComponent(roomCode)}`, {
+    method: "DELETE",
+    credentials: "include",
+  }).then((res) => {
     if (!res.ok) {
       throw new Error();
     }
@@ -87,13 +75,10 @@ export function deleteRoom(roomCode) {
 }
 
 export function leaveRoom(roomCode) {
-  return fetch(
-    `${API_BASE_URL}/rooms/${encodeURIComponent(roomCode)}/leave`,
-    {
-      method: "POST",
-      credentials: "include",
-    },
-  ).then((res) => {
+  return fetch(`${API_BASE_URL}/rooms/${encodeURIComponent(roomCode)}/leave`, {
+    method: "POST",
+    credentials: "include",
+  }).then((res) => {
     if (!res.ok) {
       throw new Error();
     }

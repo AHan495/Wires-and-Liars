@@ -101,19 +101,17 @@ function RoomPage() {
   function handleStartMatch() {
     if (!room?.id) return;
 
-    startMatch(room.id)
-      .then((res) => {
-        navigate("/match", { state: { room: res.room } });
-      });
+    startMatch(room.id).then((res) => {
+      navigate("/match", { state: { room: res.room } });
+    });
   }
 
   function handleDeleteRoom() {
     if (!room?.id) return;
 
-    deleteRoom(room.id)
-      .then(() => {
-        navigate("/lobby");
-      });
+    deleteRoom(room.id).then(() => {
+      navigate("/lobby");
+    });
   }
 
   function handleBackToLobby() {
@@ -122,10 +120,9 @@ function RoomPage() {
       return;
     }
 
-    leaveRoom(room.id)
-      .then(() => {
-        navigate("/lobby");
-      });
+    leaveRoom(room.id).then(() => {
+      navigate("/lobby");
+    });
   }
 
   if (!room) {
