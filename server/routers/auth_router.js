@@ -29,10 +29,10 @@ authRouter.get("/callback", async (req, res) => {
   });
 
   // right now google does not return name
-  const { sub, email, name } = verifiedToken.getPayload();
+  const { sub, email } = verifiedToken.getPayload();
   req.session.userId = sub;
-  req.session.user = { email, name };
-  res.redirect("http://localhost:5173/lobby");
+  req.session.user = { email };
+  res.redirect("http://localhost:5173/payment");
 });
 
 // Logs the user out via destroying session

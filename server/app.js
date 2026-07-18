@@ -10,6 +10,7 @@ import { connectRedis } from "./redis.js";
 import { authRouter } from "./routers/auth_router.js";
 import { roomsRouter } from "./routers/rooms_router.js";
 import { registerIOListeners } from "./sockets.js";
+import { billingRouter } from "./routers/billing_router.js";
 
 dotenv.config();
 
@@ -71,10 +72,11 @@ app.use(function (req, res, next) {
   next();
 });
 
-httpServer.listen(PORT, (err) => {
+app.use("/auth", authRouter);
+app.use("/billing", billingRouter);
+app.use("/rooms", roomsRouter);
+
+app.listen(PORT, (err) => {
   if (err) console.log(err);
   else console.log("HTTP server on http://localhost:%s", PORT);
 });
-
-app.use("/auth", authRouter);
-app.use("/rooms", roomsRouter);

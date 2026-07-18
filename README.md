@@ -32,8 +32,6 @@ We will be using Google OAuth
 
 - Assignee: Ali Rajan and Kaito Watanabe
 
-TBA
-
 ### Real-time enablement
 
 - Assignee: Kaito Watanabe
@@ -53,7 +51,11 @@ text to speech to interact with it.
 
 We will use Webhooks and Cloudflared Tunnels
 
-Sandbox account publishable key: TBA
+Sandbox account publishable key:
+
+```bash
+pk_test_51TqwFeLK7OPlaQg67SQgt5NK11tetG5sEJursoiDp8XulqkmHPlHvR1SolNJAlCtoYFVmyzV7vd7B8XbzKw4OAM600wUaihOIy
+```
 
 ### Deployment
 
@@ -71,46 +73,70 @@ Domain name: TBA
 
 ### Prerequisites
 
-- Node.js (v16 or higher)
-- npm or yarn
+- Node.js (`v16` or higher)
+- `npm` or `yarn`
 - Docker and Docker Compose (for local PostgreSQL)
 
 ### Setup Instructions
 
 1. Install dependencies:
+
+   ```bash
    npm install
+   ```
 
 2. Copy the example environment file:
-   cp server/example.env server/.env
 
-3. Update server/.env with your PostgreSQL connection details. Defaults are provided for local Docker setup.
+   ```bash
+   cp server/example.env server/.env
+   ```
+
+3. Update `server/.env` with your PostgreSQL connection details. Defaults are provided for local Docker setup.
 
 4. For local development, start the PostgreSQL container:
+
+   ```bash
    docker-compose up -d
+   ```
 
 5. Run the backend (in one terminal):
+
+   ```bash
    npm run backend
-   The backend will start on localhost:3000
+   ```
+
+   The backend will start on `localhost:3000`.
 
 6. Run the frontend (in another terminal):
-   npm run dev
-   The frontend will start on localhost:5173
 
-7. Visit http://localhost:5173
+   ```bash
+   npm run dev
+   ```
+
+   The frontend will start on `localhost:5173`.
+
+7. Visit `http://localhost:5173`.
 
 ### Database Management
 
 Stop the PostgreSQL container:
-   docker-compose down
+
+```bash
+docker-compose down
+```
 
 Stop PostgreSQL and remove data:
-   docker-compose down -v
+
+```bash
+docker-compose down -v
+```
 
 View PostgreSQL logs:
-   docker-compose logs postgres
+
+```bash
+docker-compose logs postgres
+```
 
 ### Switching Database Providers
 
-To use a different PostgreSQL provider (Supabase, Railway, Render, etc.), update your .env file with the provider's connection details and restart the backend. No code changes are needed.
-
-
+To use a different PostgreSQL provider (Supabase, Railway, Render, etc.), update your `.env` file with the provider's connection details and restart the backend. No code changes are needed.
