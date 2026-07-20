@@ -28,10 +28,22 @@ authRouter.get("/callback", async (req, res) => {
     idToken: tokens.id_token,
     audience: process.env.GOOGLE_CLIENT_ID,
   });
-  const { email } = verifiedToken.getPayload();
-  const [user] = await User.findOrCreate({ where: { email } });
+  // sub is a unique among all Google accounts and should be used as the unique user identifier
+  // https://docs.cloud.google.com/nodejs/docs/reference/google-auth-library/latest/google-auth-library/tokenpayload#google_auth_library_TokenPayload_sub_member
+  const { email, sub } = verifiedToken.getPayload();
+  const [user] = await User.findOrCreate({
+    where: { id: sub },
+    defaults: { email },
+  });
 
-  req.session.user = { id: user.id, email: user.email };
+  // Email can change for a specific user
+  if (user.email !== email) {
+    user.email = email;
+    await user.save();
+  }
+
+  req.session.userId = user.id;
+  req.session.user = user.email;
   res.redirect("http://localhost:5173/payment");
 });
 

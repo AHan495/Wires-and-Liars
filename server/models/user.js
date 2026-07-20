@@ -1,19 +1,17 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../datasource.js";
-import { SUBSCRIPTION_STATUSES } from "../utils/constants.js";
 
 export const User = sequelize.define(
   "User",
   {
+    // From Google OAuth (sub from getPayload)
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.STRING,
       primaryKey: true,
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
       validate: {
         isEmail: true,
       },
@@ -29,16 +27,7 @@ export const User = sequelize.define(
       allowNull: true,
       unique: true,
     },
-    subscriptionStatus: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: "inactive",
-      validate: {
-        isIn: [SUBSCRIPTION_STATUSES],
-      },
-    },
-    // Stripe Subscriptions have a period end date
-    currentPeriodEnd: {
+    accessUntil: {
       type: DataTypes.DATE,
       allowNull: true,
     },

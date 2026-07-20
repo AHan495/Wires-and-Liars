@@ -5,10 +5,7 @@ import express from "express";
 import Stripe from "stripe";
 import { requireAuthenticatedUser } from "../middleware/auth.js";
 import { User } from "../models/user.js";
-import {
-  getStripeSubscriptionPeriodEndDate,
-  isAppSubscriptionEntitled,
-} from "../utils/subscription.js";
+import { getSubscriptionAccessUntil } from "../utils/subscription.js";
 
 export const billingRouter = express.Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -25,7 +22,7 @@ billingRouter.post(
   "/create-checkout-session",
   requireAuthenticatedUser,
   async (req, res) => {
-    const user = await User.findByPk(req.session.user.id);
+    const user = await User.findByPk(req.session.userId);
 
     if (!user) {
       return res.status(404).json({ error: "User not found." });
@@ -72,21 +69,14 @@ billingRouter.get(
   "/subscription-status",
   requireAuthenticatedUser,
   async (req, res) => {
-    const user = await User.findByPk(req.session.user.id);
+    const user = await User.findByPk(req.session.userId);
 
     if (!user) {
       return res.status(404).json({ error: "User not found." });
     }
 
-    const subscription = {
-      status: user.subscriptionStatus,
-      currentPeriodEnd: user.currentPeriodEnd,
-    };
-
     res.json({
-      subscriptionStatus: user.subscriptionStatus,
-      currentPeriodEnd: user.currentPeriodEnd,
-      hasActiveSubscription: isAppSubscriptionEntitled(subscription),
+      accessUntil: user.accessUntil,
     });
   },
 );
@@ -105,14 +95,10 @@ async function subscribeUser(sessionId) {
 
   console.log("checkout session data", checkoutSession);
 
-  const userId = Number.parseInt(checkoutSession.client_reference_id, 10);
+  const userId = checkoutSession.client_reference_id;
   const subscription = checkoutSession.subscription;
 
-  if (
-    checkoutSession.payment_status !== "paid" ||
-    !Number.isInteger(userId) ||
-    !subscription
-  ) {
+  if (checkoutSession.payment_status !== "paid" || !userId || !subscription) {
     return;
   }
 
@@ -120,8 +106,7 @@ async function subscribeUser(sessionId) {
     {
       customerId: checkoutSession.customer,
       subscriptionId: subscription.id,
-      subscriptionStatus: subscription.status,
-      currentPeriodEnd: getStripeSubscriptionPeriodEndDate(subscription),
+      accessUntil: getSubscriptionAccessUntil(subscription),
     },
     { where: { id: userId } },
   );
@@ -161,8 +146,7 @@ billingRouter.post(
       await User.update(
         {
           customerId: subscription.customer,
-          subscriptionStatus: subscription.status,
-          currentPeriodEnd: getStripeSubscriptionPeriodEndDate(subscription),
+          accessUntil: getSubscriptionAccessUntil(subscription),
         },
         { where: { subscriptionId: subscription.id } },
       );

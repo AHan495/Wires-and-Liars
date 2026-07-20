@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { getSubscriptionStatus } from "../services/billing-api";
 
-const POLL_INTERVAL_MS = 2000;
+const POLL_INTERVAL_MS = 3000;
 const MAX_POLL_ATTEMPTS = 15;
+
+function hasAccess(accessUntil) {
+  return accessUntil !== null && new Date(accessUntil) > new Date();
+}
 
 export const SUBSCRIPTION_CONFIRMATION_STATUS = Object.freeze({
   CHECKING: "checking",
@@ -22,13 +26,13 @@ export function useSubscriptionConfirmation() {
     // Poll subscription status from backend until subscription is confirmed or max # of attempts are reached
     async function checkSubscriptionStatus(attempts = 0) {
       try {
-        const subscriptionStatus = await getSubscriptionStatus();
+        const subscriptionAccess = await getSubscriptionStatus();
 
         if (!isMounted) {
           return;
         }
 
-        if (subscriptionStatus.hasActiveSubscription) {
+        if (hasAccess(subscriptionAccess.accessUntil)) {
           setStatus(SUBSCRIPTION_CONFIRMATION_STATUS.CONFIRMED);
           return;
         }
