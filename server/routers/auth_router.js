@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import { OAuth2Client } from "google-auth-library";
+import { User } from "../models/user.js";
 
 // Need to run dotenv config here aswell, or else process.env will be undefined
 dotenv.config();
@@ -28,7 +29,9 @@ authRouter.get("/callback", async (req, res) => {
     audience: process.env.GOOGLE_CLIENT_ID,
   });
   const { email } = verifiedToken.getPayload();
-  req.session.user = { email };
+  const [user] = await User.findOrCreate({ where: { email } });
+
+  req.session.user = { id: user.id, email: user.email };
   res.redirect("http://localhost:5173/payment");
 });
 

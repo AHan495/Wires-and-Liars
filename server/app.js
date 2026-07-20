@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import cors from "cors";
 import { sequelize } from "./datasource.js";
+import "./models/user.js";
 import { authRouter } from "./routers/auth_router.js";
 import { billingRouter } from "./routers/billing_router.js";
 
@@ -20,7 +21,6 @@ app.use(
 );
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
 
 app.use(
   session({
@@ -47,6 +47,8 @@ app.use(function (req, res, next) {
 
 app.use("/auth", authRouter);
 app.use("/billing", billingRouter);
+
+app.use(bodyParser.json());
 
 app.listen(PORT, (err) => {
   if (err) console.log(err);

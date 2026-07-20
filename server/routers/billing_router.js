@@ -3,9 +3,16 @@
 
 import express from "express";
 import Stripe from "stripe";
+import { requireAuthenticatedUser } from "../middleware/auth.js";
+import { User } from "../models/user.js";
+import {
+  getStripeSubscriptionPeriodEndDate,
+  isAppSubscriptionEntitled,
+} from "../utils/subscription.js";
 
 export const billingRouter = express.Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const webhookEndpointSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET; // TODO: debug 400 errors despite using correct secret
 
 const REDIRECT_BASE_URL = "http://localhost:5173";
 // The Wires and Liars product in Stripe is assigned a price, which has a lookup key we can assign through the Stripe
@@ -14,31 +21,153 @@ const REDIRECT_BASE_URL = "http://localhost:5173";
 // Lookup keys let us change prices through the Stripe account without needing any code changes
 const SUBSCRIPTION_PRICE_LOOKUP_KEY = "monthly_subscription";
 
-billingRouter.post("/create-checkout-session", async (req, res) => {
-  // TODO: check user is authenticated, maybe also pass their email/user ID
-  const prices = await stripe.prices.list({
-    lookup_keys: [SUBSCRIPTION_PRICE_LOOKUP_KEY],
-    expand: ["data.product"],
+billingRouter.post(
+  "/create-checkout-session",
+  requireAuthenticatedUser,
+  async (req, res) => {
+    const user = await User.findByPk(req.session.user.id);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    // Retrieve price object by lookup key
+    const prices = await stripe.prices.list({
+      lookup_keys: [SUBSCRIPTION_PRICE_LOOKUP_KEY],
+      limit: 1,
+    });
+
+    if (!prices.data.length) {
+      return res.status(404).json({ error: "No Stripe price found." });
+    }
+
+    const price = prices.data[0];
+    // Create checkout session for the price found
+    const session = await stripe.checkout.sessions.create({
+      billing_address_collection: "auto",
+      line_items: [
+        {
+          price: price.id,
+          quantity: 1,
+        },
+      ],
+      mode: "subscription",
+      customer: user.customerId ?? undefined, // ID of existing customer (if there is one)
+      customer_email: user.customerId ? undefined : user.email, // Email used to create new Customer
+      // When customer ID is provided, Stripe uses existing customer; when email is provided, Stripe creates new
+      // customer using email
+      client_reference_id: String(user.id), // Unique string to reference the Stripe Checkout Session
+      // {CHECKOUT_SESSION_ID} is a placeholder populated by Stripe when it redirects to success_url
+      success_url: `${REDIRECT_BASE_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+    });
+
+    console.log(session);
+
+    // Checkout session created; now redirect to Stripe-hosted payment page
+    res.redirect(303, session.url);
+  },
+);
+
+billingRouter.get(
+  "/subscription-status",
+  requireAuthenticatedUser,
+  async (req, res) => {
+    const user = await User.findByPk(req.session.user.id);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    const subscription = {
+      status: user.subscriptionStatus,
+      currentPeriodEnd: user.currentPeriodEnd,
+    };
+
+    res.json({
+      subscriptionStatus: user.subscriptionStatus,
+      currentPeriodEnd: user.currentPeriodEnd,
+      hasActiveSubscription: isAppSubscriptionEntitled(subscription),
+    });
+  },
+);
+
+// Adapted from https://docs.stripe.com/checkout/fulfillment?lang=node
+async function subscribeUser(sessionId) {
+  // TODO: Make this function safe to run multiple times,
+  // even concurrently, with the same session ID
+
+  // TODO: Make sure fulfillment hasn't already been
+  // performed for this Checkout Session
+
+  const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId, {
+    expand: ["subscription"],
   });
 
-  if (!prices.data.length) {
-    return res.status(404).json({ error: "No Stripe price found." });
+  console.log("checkout session data", checkoutSession);
+
+  const userId = Number.parseInt(checkoutSession.client_reference_id, 10);
+  const subscription = checkoutSession.subscription;
+
+  if (
+    checkoutSession.payment_status !== "paid" ||
+    !Number.isInteger(userId) ||
+    !subscription
+  ) {
+    return;
   }
 
-  const session = await stripe.checkout.sessions.create({
-    billing_address_collection: "auto",
-    line_items: [
-      {
-        price: prices.data[0].id,
-        quantity: 1,
-      },
-    ],
-    mode: "subscription",
-    success_url: `${REDIRECT_BASE_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-  });
+  await User.update(
+    {
+      customerId: checkoutSession.customer,
+      subscriptionId: subscription.id,
+      subscriptionStatus: subscription.status,
+      currentPeriodEnd: getStripeSubscriptionPeriodEndDate(subscription),
+    },
+    { where: { id: userId } },
+  );
+}
 
-  console.log(session);
+billingRouter.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  async (req, res) => {
+    const payload = req.body;
+    const sig = req.headers["stripe-signature"];
 
-  // res.json({ url: session.url });
-  res.redirect(303, session.url);
-});
+    let event;
+
+    try {
+      event = stripe.webhooks.constructEvent(
+        payload,
+        sig,
+        webhookEndpointSecret,
+      );
+    } catch (err) {
+      console.log(err.message);
+      return res.status(400).json({ error: err.message });
+    }
+
+    if (
+      event.type === "checkout.session.completed" ||
+      event.type === "checkout.session.async_payment_succeeded"
+    ) {
+      const checkoutSession = event.data.object;
+      await subscribeUser(checkoutSession.id);
+    } else if (
+      event.type === "customer.subscription.updated" ||
+      event.type === "customer.subscription.deleted"
+    ) {
+      const subscription = event.data.object;
+      await User.update(
+        {
+          customerId: subscription.customer,
+          subscriptionStatus: subscription.status,
+          currentPeriodEnd: getStripeSubscriptionPeriodEndDate(subscription),
+        },
+        { where: { subscriptionId: subscription.id } },
+      );
+    }
+
+    res.status(200).end();
+  },
+);
