@@ -27,7 +27,10 @@ authRouter.get("/callback", async (req, res) => {
     idToken: tokens.id_token,
     audience: process.env.GOOGLE_CLIENT_ID,
   });
-  const { email } = verifiedToken.getPayload();
+
+  // right now google does not return name
+  const { sub, email } = verifiedToken.getPayload();
+  req.session.userId = sub;
   req.session.user = { email };
   res.redirect("http://localhost:5173/payment");
 });
@@ -35,4 +38,11 @@ authRouter.get("/callback", async (req, res) => {
 // Logs the user out via destroying session
 authRouter.get("/logout", (req, res) => {
   req.session.destroy(() => res.json({ ok: true }));
+});
+
+authRouter.get("/me", (req, res) => {
+  if (!req.session.userId) {
+    return res.status(401).json({ error: "Not Authenticated" });
+  }
+  res.json({ userId: req.session.userId, user: req.session.user });
 });

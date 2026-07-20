@@ -1,5 +1,5 @@
 import { Search, Ticket, LogIn } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CreateRoomPanel from "./CreateRoomPanel";
 import {
@@ -21,45 +21,84 @@ import {
   InputShell,
 } from "./LobbyPage.styles";
 import RoomCard from "./RoomCard";
-import { sampleRooms } from "../../data/rooms";
+import { getPublicRooms, joinRoom } from "../../services/rooms-api";
+import { subscribeToPublicRooms } from "../../services/rooms-socket";
+
+function getRoomSearchValues(room) {
+  return [room.name, room.host, room.hostId, room.id].filter(Boolean);
+}
 
 function LobbyPage() {
   // Use React Router hooks to access navigation and location state
   const navigate = useNavigate();
 
-  // Will add useEffect when we implement API calls (useState is enough to rerender for now)
+  const [rooms, setRooms] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [roomCode, setRoomCode] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    getPublicRooms()
+      .then((res) => {
+        if (isMounted) {
+          setRooms(res.rooms);
+          setErrorMessage("");
+        }
+      })
+      .catch((error) => {
+        if (isMounted) {
+          setErrorMessage(error.message);
+        }
+      });
+
+    const unsubscribe = subscribeToPublicRooms(({ publicRooms }) => {
+      setRooms(publicRooms);
+    });
+
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
+  }, []);
 
   // Normalize the search text for case-insensitive matching
   const normalizedSearch = searchText.trim().toLowerCase();
 
   // Filter rooms based on search text
-  const filteredRooms = sampleRooms.filter((room) => {
+  const filteredRooms = rooms.filter((room) => {
     if (!normalizedSearch) return true;
 
-    return [room.name, room.host, room.id].some((value) =>
-      value.toLowerCase().includes(normalizedSearch),
+    return getRoomSearchValues(room).some((value) =>
+      String(value).toLowerCase().includes(normalizedSearch),
     );
   });
 
-  // Function to navigate to the room page with the selected room
-  function openRoom(room) {
-    navigate("/room", { state: { room } });
+  function joinPublicRoom(room) {
+    joinRoom(room.id)
+      .then((res) => {
+        setErrorMessage("");
+        navigate("/room", { state: { room: res.room } });
+      })
+      .catch((error) => {
+        setErrorMessage(error.message);
+      });
   }
 
   // Function to handle joining a room by code
   function handleJoinByCode() {
     const normalizedCode = roomCode.trim().toUpperCase();
-    const matchedRoom = sampleRooms.find(
-      (room) => room.id.toUpperCase() === normalizedCode,
-    );
+    if (!normalizedCode) return;
 
-    if (matchedRoom) {
-      openRoom(matchedRoom);
-    }
-
-    return;
+    joinRoom(normalizedCode)
+      .then((res) => {
+        setErrorMessage("");
+        navigate("/room", { state: { room: res.room } });
+      })
+      .catch((error) => {
+        setErrorMessage(error.message);
+      });
   }
 
   return (
@@ -92,12 +131,16 @@ function LobbyPage() {
           {filteredRooms.length > 0 ? (
             <RoomList>
               {filteredRooms.map((room) => (
-                <RoomCard key={room.id} room={room} />
+                <RoomCard
+                  key={room.id}
+                  room={room}
+                  onJoinRoom={joinPublicRoom}
+                />
               ))}
             </RoomList>
           ) : (
             <RoomListEmpty component="p" variant="body2">
-              No rooms match your search.
+              {errorMessage || "No rooms match your search."}
             </RoomListEmpty>
           )}
 
@@ -128,7 +171,7 @@ function LobbyPage() {
         </RoomsPanel>
 
         <LobbySidebar component="aside">
-          <CreateRoomPanel onCreateRoom={openRoom} />
+          <CreateRoomPanel />
         </LobbySidebar>
       </LobbyLayout>
     </LobbyMain>

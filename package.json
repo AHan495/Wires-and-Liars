@@ -23,12 +23,17 @@
     "express-session": "^1.19.0",
     "google-auth-library": "^10.9.0",
     "lucide-react": "^1.23.0",
+    "openai": "^6.48.0",
     "pg": "^8.12.0",
     "prettier": "^3.9.4",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.1",
+    "redis": "^6.1.0",
     "sequelize": "^6.37.8",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3",
+    "sqlite3": "^6.0.1",
     "stripe": "^22.3.2"
   },
   "devDependencies": {
