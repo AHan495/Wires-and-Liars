@@ -36,13 +36,13 @@ We will be using Google OAuth
 
 - Assignee: Kaito Watanabe
 
-We'll use Socket.IO for real-time enablement. It will handle real-time lobby updates, room creation, player joins, match state, turn changes, AI messages, and transcript/audio updates.
+We'll use Socket.IO for real-time enablement. It will handle real-time lobby updates, room creation, player joins, match state, turn changes, AI messages, and transcript/audio updates. We will store the match room info in redis.
 
 ### AI Integration with MCP / tools
 
 - Assignee: Austin Han
 
-We plan on using Hugging Face (because it's free). To integrate it, we'll be using speech to text and
+We plan on using Hugging Face or Groq (because it's free). To integrate it, we'll be using speech to text and
 text to speech to interact with it.
 
 ### Stripe Integration
@@ -75,7 +75,7 @@ Domain name: TBA
 
 - Node.js (`v16` or higher)
 - `npm` or `yarn`
-- Docker and Docker Compose (for local PostgreSQL)
+- Docker and Docker Compose (for local PostgreSQL and Redis)
 
 ### Setup Instructions
 
@@ -91,9 +91,9 @@ Domain name: TBA
    cp server/example.env server/.env
    ```
 
-3. Update `server/.env` with your PostgreSQL connection details. Defaults are provided for local Docker setup.
+3. Update `server/.env` with your PostgreSQL and Redis connection details. Defaults are provided for local Docker setup.
 
-4. For local development, start the PostgreSQL container:
+4. For local development, start the PostgreSQL and Redis containers:
 
    ```bash
    docker-compose up -d
@@ -117,15 +117,32 @@ Domain name: TBA
 
 7. Visit `http://localhost:5173`.
 
-### Database Management
+### Redis
 
-Stop the PostgreSQL container:
+Redis is used to store real-time room state, public room indexes, match participants, and match message history.
+
+The backend connects to Redis using:
+
+```env
+REDIS_URL=redis://localhost:6379
+REDIS_PORT=6379
+```
+
+Clear local Redis data:
+
+```bash
+docker exec -it wires-and-liars-redis redis-cli FLUSHDB
+```
+
+### Database and Redis Management
+
+Stop the PostgreSQL and Redis containers:
 
 ```bash
 docker-compose down
 ```
 
-Stop PostgreSQL and remove data:
+Stop PostgreSQL and Redis, then remove stored data:
 
 ```bash
 docker-compose down -v
