@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { CheckCircle2, LoaderCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../auth/AuthContext";
 import {
   SUBSCRIPTION_CONFIRMATION_STATUS,
   useSubscriptionConfirmation,
@@ -18,13 +19,28 @@ import {
 
 function PaymentTransitionPage() {
   const navigate = useNavigate();
+  const { refreshCurrentUser } = useAuth();
   const confirmationStatus = useSubscriptionConfirmation();
 
   useEffect(() => {
-    if (confirmationStatus === SUBSCRIPTION_CONFIRMATION_STATUS.CONFIRMED) {
-      navigate("/lobby", { replace: true });
+    let isMounted = true;
+
+    async function redirectAfterConfirmation() {
+      await refreshCurrentUser();
+
+      if (isMounted) {
+        navigate("/lobby", { replace: true });
+      }
     }
-  }, [confirmationStatus, navigate]);
+
+    if (confirmationStatus === SUBSCRIPTION_CONFIRMATION_STATUS.CONFIRMED) {
+      redirectAfterConfirmation();
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [confirmationStatus, navigate, refreshCurrentUser]);
 
   const isChecking =
     confirmationStatus === SUBSCRIPTION_CONFIRMATION_STATUS.CHECKING;

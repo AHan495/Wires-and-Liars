@@ -10,3 +10,7 @@ export function getSubscriptionAccessUntil(subscription) {
   // Stripe stores Unix timestamp, which is in seconds; Date constructor expects milliseconds
   return new Date(periodEnd * 1000);
 }
+
+export function hasSubscriptionAccess(accessUntil) {
+  return accessUntil !== null && new Date(accessUntil) > new Date();
+}

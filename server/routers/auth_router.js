@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import { OAuth2Client } from "google-auth-library";
 import { User } from "../models/user.js";
+import { hasSubscriptionAccess } from "../utils/subscription.js";
 
 // Need to run dotenv config here aswell, or else process.env will be undefined
 dotenv.config();
@@ -45,7 +46,11 @@ authRouter.get("/callback", async (req, res) => {
     await user.save();
   }
 
-  res.redirect("http://localhost:5173/payment");
+  const redirectPath = hasSubscriptionAccess(user.accessUntil)
+    ? "/lobby"
+    : "/payment";
+
+  res.redirect(`http://localhost:5173${redirectPath}`);
 });
 
 // Logs the user out via destroying session
@@ -53,9 +58,21 @@ authRouter.get("/logout", (req, res) => {
   req.session.destroy(() => res.json({ ok: true }));
 });
 
-authRouter.get("/me", (req, res) => {
+authRouter.get("/me", async (req, res) => {
   if (!req.session.userId) {
     return res.status(401).json({ error: "Not Authenticated" });
   }
-  res.json({ userId: req.session.userId, email: req.session.email });
+
+  const user = await User.findByPk(req.session.userId);
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found." });
+  }
+
+  res.json({
+    userId: req.session.userId,
+    email: user.email,
+    accessUntil: user.accessUntil,
+    hasSubscriptionAccess: hasSubscriptionAccess(user.accessUntil),
+  });
 });
