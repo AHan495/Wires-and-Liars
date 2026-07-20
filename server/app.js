@@ -7,6 +7,7 @@ import http from "http";
 import { Server } from "socket.io";
 import { sequelize } from "./datasource.js";
 import { connectRedis } from "./redis.js";
+import "./models/user.js";
 import { authRouter } from "./routers/auth_router.js";
 import { roomsRouter } from "./routers/rooms_router.js";
 import { registerIOListeners } from "./sockets.js";
@@ -25,7 +26,6 @@ app.use(
 );
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
 
 app.use(
   session({
@@ -75,6 +75,8 @@ app.use(function (req, res, next) {
 app.use("/auth", authRouter);
 app.use("/billing", billingRouter);
 app.use("/rooms", roomsRouter);
+
+app.use(bodyParser.json());
 
 httpServer.listen(PORT, (err) => {
   if (err) console.log(err);
