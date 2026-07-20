@@ -13,7 +13,7 @@ function App() {
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/payment" element={<PaymentPage />} />
-      <Route path="/payment/success" element={<PaymentSuccessPage />} />
+      <Route path="/payment/success" element={<PaymentTransitionPage />} />
       <Route
         path="/lobby"
         element={
@@ -38,7 +38,6 @@ function App() {
           </ProtectedRoute>
         }
       />
-      <Route path="/payment/success" element={<PaymentTransitionPage />} />
       <Route path="/room" element={<RoomPage />} />
       <Route path="/match" element={<MatchPage />} />
     </Routes>

@@ -3,7 +3,7 @@
 
 import express from "express";
 import Stripe from "stripe";
-import { requireAuthenticatedUser } from "../middleware/auth.js";
+import { isAuthenticated } from "../middleware/auth.js";
 import { User } from "../models/user.js";
 import { getSubscriptionAccessUntil } from "../utils/subscription.js";
 
@@ -20,7 +20,7 @@ const SUBSCRIPTION_PRICE_LOOKUP_KEY = "monthly_subscription";
 
 billingRouter.post(
   "/create-checkout-session",
-  requireAuthenticatedUser,
+  isAuthenticated,
   async (req, res) => {
     const user = await User.findByPk(req.session.userId);
 
@@ -65,21 +65,17 @@ billingRouter.post(
   },
 );
 
-billingRouter.get(
-  "/subscription-status",
-  requireAuthenticatedUser,
-  async (req, res) => {
-    const user = await User.findByPk(req.session.userId);
+billingRouter.get("/subscription-status", isAuthenticated, async (req, res) => {
+  const user = await User.findByPk(req.session.userId);
 
-    if (!user) {
-      return res.status(404).json({ error: "User not found." });
-    }
+  if (!user) {
+    return res.status(404).json({ error: "User not found." });
+  }
 
-    res.json({
-      accessUntil: user.accessUntil,
-    });
-  },
-);
+  res.json({
+    accessUntil: user.accessUntil,
+  });
+});
 
 // Adapted from https://docs.stripe.com/checkout/fulfillment?lang=node
 async function subscribeUser(sessionId) {

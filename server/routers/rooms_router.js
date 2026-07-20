@@ -26,7 +26,7 @@ roomsRouter.post("/", async (req, res) => {
   const newRoom = await createRoom({
     ...req.body,
     hostId: req.session.userId,
-    hostname: req.session.user.name,
+    hostname: req.session.email,
   });
   await broadcastRoomState(req.io, newRoom);
   res.json({ room: newRoom });
@@ -41,7 +41,7 @@ roomsRouter.post("/:roomCode/join", async (req, res) => {
   const updatedRoom = await joinRoom(
     room,
     req.session.userId,
-    req.session.user.name,
+    req.session.email,
   );
   if (!updatedRoom) {
     return res.status(400).json({ error: "Failed to join room" });

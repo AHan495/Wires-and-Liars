@@ -31,8 +31,8 @@ authRouter.get("/callback", async (req, res) => {
   // sub is a unique among all Google accounts and should be used as the unique user identifier
   // https://docs.cloud.google.com/nodejs/docs/reference/google-auth-library/latest/google-auth-library/tokenpayload#google_auth_library_TokenPayload_sub_member
   const { sub, email } = verifiedToken.getPayload();
-  req.session.userId = user.id;
-  req.session.user = user.email;
+  req.session.userId = sub;
+  req.session.email = email; // TODO: may be better to only store userId in session as a Google user's email can change
 
   const [user] = await User.findOrCreate({
     where: { id: sub },
@@ -57,5 +57,5 @@ authRouter.get("/me", (req, res) => {
   if (!req.session.userId) {
     return res.status(401).json({ error: "Not Authenticated" });
   }
-  res.json({ userId: req.session.userId, user: req.session.user });
+  res.json({ userId: req.session.userId, email: req.session.email });
 });
