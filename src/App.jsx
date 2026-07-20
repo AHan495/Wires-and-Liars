@@ -12,34 +12,13 @@ function App() {
     <Routes>
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/payment" element={<PaymentPage />} />
-      <Route path="/payment/success" element={<PaymentTransitionPage />} />
-      <Route
-        path="/lobby"
-        element={
-          <ProtectedRoute>
-            <LobbyPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/room"
-        element={
-          <ProtectedRoute>
-            <RoomPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/match"
-        element={
-          <ProtectedRoute>
-            <MatchPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/room" element={<RoomPage />} />
-      <Route path="/match" element={<MatchPage />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/payment/success" element={<PaymentTransitionPage />} />
+        <Route path="/lobby" element={<LobbyPage />} />
+        <Route path="/room" element={<RoomPage />} />
+        <Route path="/match" element={<MatchPage />} />
+      </Route>
     </Routes>
   );
 }
