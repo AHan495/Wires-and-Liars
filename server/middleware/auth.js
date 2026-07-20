@@ -1,9 +1,6 @@
-export function requireAuthenticatedUser(req, res, next) {
+export const isAuthenticated = function (req, res, next) {
   if (!req.session.userId) {
-    return res.status(401).json({ error: "You must be logged in." });
+    return res.status(401).json({ error: "Not Authenticated" });
   }
-
   next();
-}
-
-export const isAuthenticated = requireAuthenticatedUser;
+};

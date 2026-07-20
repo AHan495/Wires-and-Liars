@@ -3,9 +3,14 @@ import session from "express-session";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import cors from "cors";
+import http from "http";
+import { Server } from "socket.io";
 import { sequelize } from "./datasource.js";
+import { connectRedis } from "./redis.js";
 import "./models/user.js";
 import { authRouter } from "./routers/auth_router.js";
+import { roomsRouter } from "./routers/rooms_router.js";
+import { registerIOListeners } from "./sockets.js";
 import { billingRouter } from "./routers/billing_router.js";
 
 dotenv.config();
@@ -40,6 +45,28 @@ try {
   console.error("Unable to connect to the database:", error);
 }
 
+// Connnect to Redis
+try {
+  await connectRedis();
+} catch (error) {
+  console.error("Unable to connect to Redis:", error);
+}
+
+const httpServer = http.createServer(app);
+export const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:5173",
+    credentials: true,
+  },
+});
+
+registerIOListeners(io);
+
+app.use(function (req, res, next) {
+  req.io = io;
+  next();
+});
+
 app.use(function (req, res, next) {
   console.log("HTTP request", req.method, req.url, req.body);
   next();
@@ -47,10 +74,11 @@ app.use(function (req, res, next) {
 
 app.use("/auth", authRouter);
 app.use("/billing", billingRouter);
+app.use("/rooms", roomsRouter);
 
 app.use(bodyParser.json());
 
-app.listen(PORT, (err) => {
+httpServer.listen(PORT, (err) => {
   if (err) console.log(err);
   else console.log("HTTP server on http://localhost:%s", PORT);
 });

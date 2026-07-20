@@ -30,7 +30,10 @@ authRouter.get("/callback", async (req, res) => {
   });
   // sub is a unique among all Google accounts and should be used as the unique user identifier
   // https://docs.cloud.google.com/nodejs/docs/reference/google-auth-library/latest/google-auth-library/tokenpayload#google_auth_library_TokenPayload_sub_member
-  const { email, sub } = verifiedToken.getPayload();
+  const { sub, email } = verifiedToken.getPayload();
+  req.session.userId = user.id;
+  req.session.user = user.email;
+
   const [user] = await User.findOrCreate({
     where: { id: sub },
     defaults: { email },
@@ -42,12 +45,17 @@ authRouter.get("/callback", async (req, res) => {
     await user.save();
   }
 
-  req.session.userId = user.id;
-  req.session.user = user.email;
   res.redirect("http://localhost:5173/payment");
 });
 
 // Logs the user out via destroying session
 authRouter.get("/logout", (req, res) => {
   req.session.destroy(() => res.json({ ok: true }));
+});
+
+authRouter.get("/me", (req, res) => {
+  if (!req.session.userId) {
+    return res.status(401).json({ error: "Not Authenticated" });
+  }
+  res.json({ userId: req.session.userId, user: req.session.user });
 });

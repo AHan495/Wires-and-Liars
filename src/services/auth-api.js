@@ -13,3 +13,14 @@ export function loginWithGoogle() {
   const loginUrl = getGoogleLoginUrl();
   window.location.assign(loginUrl);
 }
+
+export function getCurrentUser() {
+  return fetch(`${GOOGLE_LOGIN_BASE_URL}/auth/me`, {
+    credentials: "include",
+  }).then((res) => {
+    if (!res.ok) {
+      throw new Error();
+    }
+    return res.json();
+  });
+}
