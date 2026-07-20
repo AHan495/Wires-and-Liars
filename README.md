@@ -36,7 +36,7 @@ We will be using Google OAuth
 
 - Assignee: Kaito Watanabe
 
-We will be using WebRTC with PeerJS for real time enablement, using Peer to Peer to Peer architecture
+We'll use Socket.IO for real-time enablement. It will handle real-time lobby updates, room creation, player joins, match state, turn changes, AI messages, and transcript/audio updates.
 
 ### AI Integration with MCP / tools
 

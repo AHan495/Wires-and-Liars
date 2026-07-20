@@ -2,7 +2,6 @@ import { Globe, Lock, Plus } from "lucide-react";
 import { useState } from "react";
 import { Box, Switch } from "@mui/material";
 import { styled } from "@mui/system";
-import { createDraftRoom, generateRoomCode } from "../../data/rooms";
 import {
   BlockPrimaryButton,
   Field,
@@ -14,6 +13,8 @@ import {
   PanelTitle,
   TextInput,
 } from "./LobbyPage.styles";
+import { useNavigate } from "react-router-dom";
+import { createRoom } from "../../services/rooms-api";
 
 const SwitchField = styled(Box)({
   display: "flex",
@@ -33,22 +34,24 @@ const SwitchLabel = styled(Box, {
   fontSize: "0.8rem",
 }));
 
-function CreateRoomPanel({ onCreateRoom }) {
-  const [isPrivate, setIsPrivate] = useState(false);
+function CreateRoomPanel() {
+  const [isPublic, setIsPublic] = useState(true);
   const [roomName, setRoomName] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
 
-  // Function to handle the creation of a new room
+  const navigate = useNavigate();
+
+  // function to handle the creation of a new room
   function handleCreateRoom() {
     const normalizedName = roomName.trim();
-
-    // openRoom function is passed down from the parent component (LobbyPage)
-    onCreateRoom(
-      createDraftRoom({
-        id: generateRoomCode(),
-        name: normalizedName || "New Room",
-        publicRoom: !isPrivate,
-      }),
-    );
+    setIsCreating(true);
+    createRoom(normalizedName || "New Room", isPublic)
+      .then((res) => {
+        navigate("/room", { state: { room: res.room } });
+      })
+      .finally(() => {
+        setIsCreating(false);
+      });
   }
 
   return (
@@ -77,20 +80,20 @@ function CreateRoomPanel({ onCreateRoom }) {
           <FieldLabel component="span">Visibility</FieldLabel>
           <SwitchField>
             {/* Toggles the display */}
-            {!isPrivate ? (
+            {isPublic ? (
               <SwitchLabel component="span" active>
                 <Globe size={14} strokeWidth={2} color="#27a656" />
                 Public
               </SwitchLabel>
             ) : (
-              <SwitchLabel component="span" active={isPrivate}>
+              <SwitchLabel component="span" active={isPublic}>
                 <Lock size={14} strokeWidth={2} color="#c04b4b" />
                 Private
               </SwitchLabel>
             )}
             <Switch
-              checked={isPrivate}
-              onChange={(e) => setIsPrivate(e.target.checked)}
+              checked={isPublic}
+              onChange={(e) => setIsPublic(e.target.checked)}
               color="primary"
             />
           </SwitchField>
@@ -101,6 +104,7 @@ function CreateRoomPanel({ onCreateRoom }) {
           variant="contained"
           startIcon={<Plus size={14} strokeWidth={2} />}
           onClick={handleCreateRoom}
+          disabled={isCreating}
         >
           Create room
         </BlockPrimaryButton>

@@ -41,13 +41,15 @@ export const MatchIdentity = styled(Box)({
   fontWeight: 600,
 });
 
-export const MatchSwatch = styled(Box)({
+export const MatchSwatch = styled(Box, {
+  shouldForwardProp: (prop) => !["swatchColor", "swatchGlow"].includes(prop),
+})(({ swatchColor, swatchGlow }) => ({
   width: "12px",
   height: "12px",
   borderRadius: "999px",
-  backgroundColor: "var(--accent-strong)",
-  boxShadow: "0 0 0 4px var(--accent-soft)",
-});
+  backgroundColor: swatchColor ?? "var(--accent-strong)",
+  boxShadow: `0 0 0 4px ${swatchGlow ?? "var(--accent-soft)"}`,
+}));
 
 export const MatchIdentityText = styled(Typography)({
   fontWeight: 600,
@@ -55,9 +57,11 @@ export const MatchIdentityText = styled(Typography)({
   fontFamily: "inherit",
 });
 
-export const MatchIdentityAccent = styled(Box)({
-  color: "var(--accent-strong)",
-});
+export const MatchIdentityAccent = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "accentColor",
+})(({ accentColor }) => ({
+  color: accentColor ?? "var(--accent-strong)",
+}));
 
 export const MatchTimer = styled(Typography)({
   minWidth: "96px",
@@ -73,17 +77,84 @@ export const MatchTimer = styled(Typography)({
   borderColor: "rgba(248, 113, 113, 0.38)",
 });
 
-export const MatchVoiceGrid = styled(Box)({
-  flex: 1,
-  minHeight: 0,
+export const MatchVoiceGrid = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "isHistoryOpen",
+})(({ isHistoryOpen }) => ({
   display: "grid",
-  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-  gridTemplateRows: "minmax(250px, 1fr) minmax(250px, 1fr)",
+  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+  gridAutoRows: isHistoryOpen ? "320px" : "420px",
   gap: "16px",
   "@media (max-width: 960px)": {
     gridTemplateColumns: "1fr",
-    gridTemplateRows: "repeat(3, minmax(220px, auto))",
+    gridAutoRows: isHistoryOpen ? "280px" : "360px",
   },
+}));
+
+export const MatchHistoryPanel = styled(Box)({
+  border: "1px solid var(--border)",
+  borderRadius: "14px",
+  backgroundColor: "var(--panel-soft)",
+  overflow: "hidden",
+  flex: "0 0 auto",
+});
+
+export const MatchHistoryHeader = styled(Button)({
+  width: "100%",
+  minHeight: "44px",
+  padding: "10px 14px",
+  justifyContent: "space-between",
+  borderRadius: 0,
+  color: "var(--text)",
+  fontSize: "0.86rem",
+  fontWeight: 700,
+  textTransform: "none",
+  transition: "none",
+  "&:hover, &:focus, &:focus-visible, &:active": {
+    backgroundColor: "transparent",
+    boxShadow: "none",
+  },
+});
+
+export const MatchHistoryList = styled(Box)({
+  height: "220px",
+  maxHeight: "220px",
+  overflowY: "auto",
+  display: "flex",
+  flexDirection: "column",
+  gap: "8px",
+  padding: "12px 14px 14px",
+  borderTop: "1px solid var(--border)",
+});
+
+export const MatchHistoryItem = styled(Box, {
+  shouldForwardProp: (prop) => !["isActive", "activeGlow"].includes(prop),
+})(({ isActive, activeGlow }) => ({
+  display: "grid",
+  gridTemplateColumns: "72px 1fr",
+  gap: "10px",
+  alignItems: "start",
+  padding: isActive ? "8px 10px" : 0,
+  borderRadius: isActive ? "10px" : 0,
+  backgroundColor: isActive ? activeGlow : "transparent",
+  color: "var(--text)",
+  fontSize: "0.84rem",
+}));
+
+export const MatchHistorySpeaker = styled(Typography, {
+  shouldForwardProp: (prop) => prop !== "speakerColor",
+})(({ speakerColor }) => ({
+  color: speakerColor,
+  fontWeight: 700,
+  fontSize: "0.8rem",
+  fontFamily: "inherit",
+}));
+
+export const MatchHistoryText = styled(Typography)({
+  margin: 0,
+  color: "var(--muted)",
+  fontSize: "0.84rem",
+  lineHeight: 1.45,
+  fontFamily: "inherit",
 });
 
 export const MatchControls = styled(Box)({
