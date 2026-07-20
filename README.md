@@ -137,6 +137,29 @@ View PostgreSQL logs:
 docker-compose logs postgres
 ```
 
+### Stripe Local Development
+
+Stripe webhooks need to be registered through the Stripe account. This involves providing a publicly-accessible webhook
+URL; for local development, we use a Cloudflare tunnel to map localhost to a public host.
+
+1. Setup `cloudflared` from
+   https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/downloads/
+
+2. Run
+
+```bash
+cloudflared tunnel --url http://localhost:3000
+```
+
+This will output a tunnel URL.
+
+3. Follow these instructions to add the tunnel URL as an event destination:
+   https://docs.stripe.com/webhooks#register-webhook
+
+   Select the event types used in the codebase.
+
+Note: each time you run `cloudflared` and obtain a new tunnel URL, you will need to edit this destination.
+
 ### Switching Database Providers
 
 To use a different PostgreSQL provider (Supabase, Railway, Render, etc.), update your `.env` file with the provider's connection details and restart the backend. No code changes are needed.
