@@ -216,3 +216,11 @@ Follow these steps to setup a Stripe account that can be used for our site's Str
 
    The webhook is now configured. You can also view events and their requests/responses through "Event deliveries" in
    the Stripe dashboard. Test card numbers can be found here: https://docs.stripe.com/testing
+
+## Deployment
+
+Run
+
+ssh root@project-wires-and-liars.amazingcloud.space
+
+to access the VM.
