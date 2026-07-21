@@ -193,6 +193,7 @@ Follow these steps to setup a Stripe account that can be used for our site's Str
    - Set the pricing to be _Recurring_ with _Monthly_ frequency.
    - Click "More pricing options", then set _Lookup key_ to some (meaningful) unique string. Lookup keys will be used
      for Stripe API calls (e.g., when retrieving prices).
+   - Currently, must match SUBSCRIPTION_PRICE_LOOKUP_KEY value.
 
 3. Go to Developers > API keys to get your sandbox secret key (`sk_test_...`). Set `STRIPE_SECRET_KEY` in
    `/server/.env` to this key.

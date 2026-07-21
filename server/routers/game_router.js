@@ -90,36 +90,45 @@ function makePrompt(chatHistory, aiColour) {
 }
 
 // Function to ask AI for a response
-async function tellAI(chatHistory, aiColour) {
+async function tellAI(chatHistory, aiColour, attempts = 3) {
   const messages = makePrompt(chatHistory, aiColour);
 
   switch (AI_PROVIDER) {
     case "groq": {
-      const response = await fetch(
-        "https://api.groq.com/openai/v1/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
-            "Content-Type": "application/json",
+      for (let attempt = 1; attempt <= attempts; attempt++) {
+        const response = await fetch(
+          "https://api.groq.com/openai/v1/chat/completions",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              model: GROQ_MODEL,
+              messages,
+              response_format: { type: "json_object" },
+            }),
           },
-          body: JSON.stringify({
-            model: GROQ_MODEL,
-            messages,
-            response_format: { type: "json_object" },
-          }),
-        },
-      );
+        );
 
-      const data = await response.json();
-      const rawText = data.choices?.[0]?.message?.content?.trim() ?? "";
-      const parsedText = parseAIText(rawText);
+        if (response.status === 503 && attempt < attempts) {
+          console.log(`AI provider: ${AI_PROVIDER} got 503, retrying (${attempt}/${attempts})`);
+          continue;
+        }
 
-      console.log("AI provider:", AI_PROVIDER);
-      console.log("AI raw response:", rawText);
-      console.log("AI parsed text:", parsedText || "(empty)");
+        const data = await response.json();
+        const rawText = data.choices?.[0]?.message?.content?.trim() ?? "";
+        const parsedText = parseAIText(rawText);
 
-      return parsedText;
+        console.log("AI provider:", AI_PROVIDER);
+        console.log("AI raw response:", rawText);
+        console.log("AI parsed text:", parsedText || "(empty)");
+
+        return parsedText;
+      }
+
+      return "";
     }
     default:
       return "";
