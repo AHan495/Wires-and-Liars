@@ -74,9 +74,8 @@ app.use(function (req, res, next) {
 
 app.use("/auth", authRouter);
 app.use("/billing", billingRouter);
-app.use("/rooms", roomsRouter);
-
 app.use(bodyParser.json());
+app.use("/rooms", roomsRouter);
 
 httpServer.listen(PORT, (err) => {
   if (err) console.log(err);
