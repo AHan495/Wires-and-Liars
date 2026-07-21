@@ -5,7 +5,11 @@ import express from "express";
 import Stripe from "stripe";
 import { isAuthenticated } from "../middleware/auth.js";
 import { User } from "../models/user.js";
-import { getSubscriptionAccessUntil } from "../utils/subscription.js";
+import {
+  subscribeUser,
+  syncSubscription,
+  unsubscribeUser,
+} from "../services/billing_service.js";
 
 export const billingRouter = express.Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -77,36 +81,26 @@ billingRouter.get("/subscription-status", isAuthenticated, async (req, res) => {
   });
 });
 
-// Adapted from https://docs.stripe.com/checkout/fulfillment?lang=node
-async function subscribeUser(sessionId) {
-  // TODO: Make this function safe to run multiple times,
-  // even concurrently, with the same session ID
+billingRouter.post(
+  "/create-portal-session",
+  isAuthenticated,
+  async (req, res) => {
+    const user = await User.findByPk(req.session.userId);
 
-  // TODO: Make sure fulfillment hasn't already been
-  // performed for this Checkout Session
+    if (!user?.customerId) {
+      return res.status(404).json({ error: "Stripe customer not found." });
+    }
 
-  const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId, {
-    expand: ["subscription"],
-  });
+    const { returnPath } = req.body;
 
-  console.log("checkout session data", checkoutSession);
+    const portalSession = await stripe.billingPortal.sessions.create({
+      customer: user.customerId,
+      return_url: `${REDIRECT_BASE_URL}${returnPath}`, // Redirect to this once done managing billing
+    });
 
-  const userId = checkoutSession.client_reference_id;
-  const subscription = checkoutSession.subscription;
-
-  if (checkoutSession.payment_status !== "paid" || !userId || !subscription) {
-    return;
-  }
-
-  await User.update(
-    {
-      customerId: checkoutSession.customer,
-      subscriptionId: subscription.id,
-      accessUntil: getSubscriptionAccessUntil(subscription),
-    },
-    { where: { id: userId } },
-  );
-}
+    res.redirect(303, portalSession.url);
+  },
+);
 
 billingRouter.post(
   "/webhook",
@@ -133,19 +127,16 @@ billingRouter.post(
       event.type === "checkout.session.async_payment_succeeded"
     ) {
       const checkoutSession = event.data.object;
-      await subscribeUser(checkoutSession.id);
+      await subscribeUser(stripe, checkoutSession.id);
     } else if (
-      event.type === "customer.subscription.updated" ||
-      event.type === "customer.subscription.deleted"
+      event.type === "customer.subscription.created" ||
+      event.type === "customer.subscription.updated"
     ) {
       const subscription = event.data.object;
-      await User.update(
-        {
-          customerId: subscription.customer,
-          accessUntil: getSubscriptionAccessUntil(subscription),
-        },
-        { where: { subscriptionId: subscription.id } },
-      );
+      await syncSubscription(subscription);
+    } else if (event.type === "customer.subscription.deleted") {
+      const subscription = event.data.object;
+      await unsubscribeUser(subscription);
     }
 
     res.status(200).end();
