@@ -163,3 +163,38 @@ Note: each time you run `cloudflared` and obtain a new tunnel URL, you will need
 ### Switching Database Providers
 
 To use a different PostgreSQL provider (Supabase, Railway, Render, etc.), update your `.env` file with the provider's connection details and restart the backend. No code changes are needed.
+
+## Stripe Account Setup
+
+Follow these steps to setup a Stripe account that can be used for our site's Stripe-related features.
+
+1. Sign up and create a Stripe account: https://dashboard.stripe.com/register
+
+2. Create a product for our site's subscription by following these steps:
+   https://docs.stripe.com/products-prices/manage-prices#create-product
+
+   - Set the pricing to be _Recurring_ with _Monthly_ frequency.
+   - Click "More pricing options", then set _Lookup key_ to some (meaningful) unique string. Lookup keys will be used
+     for Stripe API calls (e.g., when retrieving prices).
+
+3. Go to Developers > API keys to get your sandbox secret key (`sk_test_...`). Set `STRIPE_SECRET_KEY` in
+   `/server/.env` to this key.
+
+4. Configure your webhook as follows:
+
+   1. Go to Workbench > Webhooks and click "Add destination".
+
+   2. Select "Your account" for the scope, and for the events, select all events used by our webhook endpoint (e.g.,
+      `checkout.session.completed`). Click "Next".
+
+   3. Select "Webhook endpoint". Click "Continue".
+
+   4. Enter your webhook endpoint URL (`base-url/billing/webhook`). For local development, follow the previous steps on
+      creating a Cloudflare tunnel and use the tunnel's URL as your base URL (note that each time you create a tunnel,
+      you will need to update the endpoint URL through "Edit destination"). Click "Create destination".
+
+   5. In your webhook, copy the signing secret (`whsec_...`) and set `STRIPE_WEBHOOK_ENDPOINT_SECRET` in `/server/.env`
+      to this secret.
+
+   The webhook is now configured. You can also view events and their requests/responses through "Event deliveries" in
+   the Stripe dashboard. Test card numbers can be found here: https://docs.stripe.com/testing
