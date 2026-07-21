@@ -1,7 +1,13 @@
 // For Stripe subscription object
 export function getSubscriptionAccessUntil(subscription) {
+  if (!subscription || !hasActiveSubscriptionStatus(subscription.status)) {
+    return null;
+  }
+
   // First (only) line item is the subscription to our site
-  const periodEnd = subscription?.items?.data?.[0]?.current_period_end;
+  const periodEnd =
+    subscription.current_period_end ??
+    subscription.items?.data?.[0]?.current_period_end;
 
   if (!periodEnd) {
     return null;
@@ -13,4 +19,8 @@ export function getSubscriptionAccessUntil(subscription) {
 
 export function hasSubscriptionAccess(accessUntil) {
   return accessUntil !== null && new Date(accessUntil) > new Date();
+}
+
+function hasActiveSubscriptionStatus(status) {
+  return status === "active";
 }
