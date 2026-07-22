@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - "server/**"
+      - "package.json"
+      - "package-lock.json"
 
 env:
   IMAGE_NAME: wires-and-liars-backend
@@ -14,15 +16,12 @@ jobs:
   push:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
-    defaults:
-      run:
-        working-directory: server
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Build image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+        run: docker build . --file server/Dockerfile --tag $IMAGE_NAME
 
       - name: Log into GitHub Container Registry
         run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
@@ -43,4 +42,4 @@ jobs:
           script: |
             cd ~/wires-and-liars
             docker compose pull backend
-            docker compose up -d backend No newline at end of file
+            docker compose up -d backend
