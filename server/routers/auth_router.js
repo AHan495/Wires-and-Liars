@@ -12,7 +12,7 @@ export const authRouter = express.Router();
 const client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  "http://localhost:3000/auth/callback",
+  process.env.BACKEND_URL + "/auth/callback",
 );
 
 // Generate a URL to redirect the user to where they will authorize with Google
@@ -50,7 +50,7 @@ authRouter.get("/callback", async (req, res) => {
     ? "/lobby"
     : "/payment";
 
-  res.redirect(`http://localhost:5173${redirectPath}`);
+  res.redirect(`${process.env.FRONTEND_URL}${redirectPath}`);
 });
 
 // Logs the user out via destroying session

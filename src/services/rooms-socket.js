@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const SOCKET_BASE_URL = "http://localhost:3000";
+const SOCKET_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 // Singleton
 let roomsSocket;

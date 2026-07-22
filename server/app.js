@@ -16,11 +16,11 @@ import { billingRouter } from "./routers/billing_router.js";
 dotenv.config();
 
 export const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     credentials: true,
   }),
 );
@@ -55,7 +55,7 @@ try {
 const httpServer = http.createServer(app);
 export const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     credentials: true,
   },
 });
@@ -79,5 +79,5 @@ app.use("/rooms", roomsRouter);
 
 httpServer.listen(PORT, (err) => {
   if (err) console.log(err);
-  else console.log("HTTP server on http://localhost:%s", PORT);
+  else console.log(`HTTP server running on port ${PORT}`);
 });
