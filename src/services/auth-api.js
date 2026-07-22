@@ -1,6 +1,6 @@
 // Can create separate .env files for development/production with different base URLs
 const GOOGLE_LOGIN_BASE_URL =
-  import.meta.env.VITE_GOOGLE_LOGIN_BASE_URL ?? "http://localhost:3000";
+  import.meta.env.VITE_BACKEND_URL ?? "http://localhost:3000";
 
 const GOOGLE_LOGIN_ENDPOINT = "/auth/google";
 
