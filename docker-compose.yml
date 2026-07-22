@@ -35,8 +35,8 @@ services:
     expose:
       - 80
     environment:
-      - VIRTUAL_HOST=CHANGEMECHANGEME
-      - LETSENCRYPT_HOST=CHANGEMECHANGEME
+      - VIRTUAL_HOST=${FRONTEND_DOMAIN}
+      - LETSENCRYPT_HOST=${FRONTEND_DOMAIN}
     networks:
       - wires-and-liars-net
 
@@ -54,9 +54,9 @@ services:
     env_file:
       - ./server/.env
     environment:
-      - VIRTUAL_HOST=CHANGEMECHANGEME
+      - VIRTUAL_HOST=${BACKEND_DOMAIN}
       - VIRTUAL_PORT=3000
-      - LETSENCRYPT_HOST=CHANGEMECHANGEME
+      - LETSENCRYPT_HOST=${BACKEND_DOMAIN}
     networks:
       - wires-and-liars-net
 
