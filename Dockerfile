@@ -18,4 +18,4 @@ COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80
 
-# Friendly comment to re run work flow!
+# Friendly comment to re run work flow! 
