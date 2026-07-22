@@ -1,3 +1,5 @@
+import "./instrument.js";
+import * as Sentry from "@sentry/node"
 import express from "express";
 import session from "express-session";
 import bodyParser from "body-parser";
@@ -76,6 +78,9 @@ app.use("/auth", authRouter);
 app.use("/billing", billingRouter);
 app.use(bodyParser.json());
 app.use("/rooms", roomsRouter);
+
+// Must come after routes, and before other error middleware
+Sentry.setupExpressErrorHandler(app);
 
 httpServer.listen(PORT, (err) => {
   if (err) console.log(err);
