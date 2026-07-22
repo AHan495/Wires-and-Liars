@@ -19,6 +19,20 @@ import {
   LoginShell,
 } from "./LoginPage.styles";
 
+import * as Sentry from '@sentry/react';
+// Add this button component to your app to test Sentry's error tracking
+function ErrorButton() {
+  return (
+    <button
+      onClick={() => {
+        throw new Error('This is your first error!');
+      }}
+    >
+      Break the world
+    </button>
+  );
+}
+
 function LoginPage() {
   const [isRedirecting, setIsRedirecting] = useState(false);
 
@@ -57,6 +71,7 @@ function LoginPage() {
           </Stack>
 
           <Stack spacing={2}>
+            <ErrorButton />
             <GoogleButton
               type="button"
               variant="contained"
