@@ -29,7 +29,7 @@ services:
       - wires-and-liars-net
 
   frontend:
-    image: ghcr.io/UTSC-CSCC09-Programming-on-the-We/wires-and-liars-frontend
+    image: ghcr.io/utsc-cscc09-programming-on-the-web/wires-and-liars-frontend
     container_name: wires-and-liars-frontend
     restart: always
     expose:
@@ -41,7 +41,7 @@ services:
       - wires-and-liars-net
 
   backend:
-    image: ghcr.io/UTSC-CSCC09-Programming-on-the-We/wires-and-liars-backend
+    image: ghcr.io/utsc-cscc09-programming-on-the-web/wires-and-liars-backend
     container_name: wires-and-liars-backend
     restart: always
     expose:
