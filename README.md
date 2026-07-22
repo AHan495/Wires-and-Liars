@@ -224,3 +224,13 @@ Run
 ssh root@project-wires-and-liars.amazingcloud.space
 
 to access the VM.
+
+Because of the two workflows, this should be unneeded, and any changes pushed to the main branch will
+automatically update on the VM.
+
+To move .env files, run
+
+scp project-wires-and-liars/.env root@project-wires-and-liars.amazingcloud.space:~/wires-and-liars/.env
+scp project-wires-and-liars/server/.env root@project-wires-and-liars.amazingcloud.space:~/wires-and-liars/server/.env
+
+(Or just whatever your file directory system is)
