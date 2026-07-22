@@ -1,13 +1,73 @@
 services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+      - ./vhost:/etc/nginx/vhost.d
+      - ./html:/usr/share/nginx/html
+    networks:
+      - wires-and-liars-net
+
+  nginx-proxy-acme:
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-acme
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+      - ./vhost:/etc/nginx/vhost.d
+      - ./html:/usr/share/nginx/html
+      - ./acme:/etc/acme.sh
+    environment:
+      - DEFAULT_EMAIL=austinone.han@mail.utoronto.ca
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+    networks:
+      - wires-and-liars-net
+
+  frontend:
+    image: ghcr.io/UTSC-CSCC09-Programming-on-the-We/wires-and-liars-frontend
+    container_name: wires-and-liars-frontend
+    restart: always
+    expose:
+      - 80
+    environment:
+      - VIRTUAL_HOST=${FRONTEND_DOMAIN}
+      - LETSENCRYPT_HOST=${FRONTEND_DOMAIN}
+    networks:
+      - wires-and-liars-net
+
+  backend:
+    image: ghcr.io/UTSC-CSCC09-Programming-on-the-We/wires-and-liars-backend
+    container_name: wires-and-liars-backend
+    restart: always
+    expose:
+      - 3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - ./server/.env
+    environment:
+      - VIRTUAL_HOST=${BACKEND_DOMAIN}
+      - VIRTUAL_PORT=3000
+      - LETSENCRYPT_HOST=${BACKEND_DOMAIN}
+    networks:
+      - wires-and-liars-net
+
   postgres:
     image: postgres:16-alpine
     container_name: wires-and-liars-db
+    restart: always
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
       POSTGRES_DB: ${DB_NAME:-wires_and_liars}
-    ports:
-      - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -25,8 +85,7 @@ services:
   redis:
     image: redis:7-alpine
     container_name: wires-and-liars-redis
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
+    restart: always
     volumes:
       - redis_data:/data
     healthcheck:

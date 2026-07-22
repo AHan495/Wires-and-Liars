@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+.github
+server
+ai-sessions
+mockup
+.env
+.env.example
+SSH_KEYS
+README.md
+docker-compose.yml
+docker-compose-local.yml
+Dockerfile
