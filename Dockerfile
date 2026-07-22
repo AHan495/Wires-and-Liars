@@ -19,4 +19,4 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
-# Friendly comment to re run work flow!
+# Friendly comment to re run work flow! 
