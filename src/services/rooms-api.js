@@ -85,3 +85,19 @@ export function leaveRoom(roomCode) {
     return res.json();
   });
 }
+
+export function voteInMatch(roomCode, targetId) {
+  return fetch(`${API_BASE_URL}/rooms/${encodeURIComponent(roomCode)}/vote`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ targetId }),
+  }).then((res) => {
+    if (!res.ok) {
+      throw new Error();
+    }
+    return res.json();
+  });
+}

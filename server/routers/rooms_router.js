@@ -2,6 +2,7 @@ import { Router } from "express";
 import { isAuthenticated } from "../middleware/auth.js";
 import {
   createRoom,
+  castMatchVote,
   deleteRoom,
   endMatch,
   getPublicRooms,
@@ -97,6 +98,26 @@ roomsRouter.post("/:roomCode/end", async (req, res) => {
   if (!updatedRoom) {
     return res.status(500).json({ error: "Failed to end match" });
   }
+  await broadcastRoomState(req.io, updatedRoom);
+  res.json({ room: updatedRoom });
+});
+
+// cast a match vote for who the humans think is AI
+roomsRouter.post("/:roomCode/vote", async (req, res) => {
+  const room = await getRoom(req.params.roomCode);
+  if (!room) {
+    return res.status(404).json({ error: "Room not found" });
+  }
+
+  const updatedRoom = await castMatchVote(
+    req.params.roomCode,
+    req.session.userId,
+    req.body.targetId,
+  );
+  if (!updatedRoom) {
+    return res.status(400).json({ error: "Failed to cast vote" });
+  }
+
   await broadcastRoomState(req.io, updatedRoom);
   res.json({ room: updatedRoom });
 });

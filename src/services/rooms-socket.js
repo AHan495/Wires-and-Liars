@@ -59,7 +59,7 @@ export function subscribeToRoom(roomCode, { onRoomUpdated, onRoomDeleted }) {
 
 export function subscribeToMatchMessages(
   roomCode,
-  { onMatchMessage, onRoomDeleted },
+  { onMatchMessage, onRoomUpdated, onRoomDeleted },
 ) {
   const socket = getRoomsSocket();
 
@@ -70,6 +70,10 @@ export function subscribeToMatchMessages(
     socket.on("matchMessage", onMatchMessage);
   }
 
+  if (onRoomUpdated) {
+    socket.on("updatedRoom", onRoomUpdated);
+  }
+
   if (onRoomDeleted) {
     socket.on("deletedRoom", onRoomDeleted);
   }
@@ -78,6 +82,10 @@ export function subscribeToMatchMessages(
   return () => {
     if (onMatchMessage) {
       socket.off("matchMessage", onMatchMessage);
+    }
+
+    if (onRoomUpdated) {
+      socket.off("updatedRoom", onRoomUpdated);
     }
 
     if (onRoomDeleted) {

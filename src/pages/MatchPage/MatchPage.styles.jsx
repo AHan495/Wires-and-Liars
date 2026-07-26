@@ -77,6 +77,13 @@ export const MatchTimer = styled(Typography)({
   borderColor: "rgba(248, 113, 113, 0.38)",
 });
 
+export const MatchStageText = styled(Typography)({
+  color: "var(--muted)",
+  fontSize: "0.86rem",
+  fontWeight: 600,
+  fontFamily: "inherit",
+});
+
 export const MatchVoiceGrid = styled(Box, {
   shouldForwardProp: (prop) => prop !== "isHistoryOpen",
 })(({ isHistoryOpen }) => ({
@@ -167,6 +174,72 @@ export const MatchControls = styled(Box)({
       width: "100%",
     },
   },
+});
+
+export const MatchVotePanel = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  gap: "12px",
+  padding: "14px",
+  border: "1px solid var(--border)",
+  borderRadius: "14px",
+  backgroundColor: "var(--panel-soft)",
+});
+
+export const MatchVoteTitle = styled(Typography)({
+  margin: 0,
+  color: "var(--text)",
+  fontSize: "0.94rem",
+  fontWeight: 700,
+  fontFamily: "inherit",
+});
+
+export const MatchVoteOptions = styled(Box)({
+  display: "grid",
+  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+  gap: "10px",
+  "@media (max-width: 720px)": {
+    gridTemplateColumns: "1fr",
+  },
+});
+
+export const MatchVoteButton = styled(Button, {
+  shouldForwardProp: (prop) => !["selected", "accentColor"].includes(prop),
+})(({ selected, accentColor }) => ({
+  minHeight: "42px",
+  borderRadius: "12px",
+  textTransform: "none",
+  fontSize: "0.88rem",
+  fontWeight: 700,
+  color: selected ? "var(--text)" : "var(--muted)",
+  borderColor: selected ? accentColor : "var(--border)",
+  backgroundColor: selected ? "rgba(96, 165, 250, 0.12)" : "transparent",
+  "&:hover, &:focus-visible": {
+    borderColor: accentColor,
+    backgroundColor: "rgba(96, 165, 250, 0.12)",
+  },
+}));
+
+export const MatchResultPanel = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "humansWin",
+})(({ humansWin }) => ({
+  padding: "14px",
+  border: "1px solid var(--border)",
+  borderRadius: "14px",
+  backgroundColor: humansWin
+    ? "rgba(74, 222, 128, 0.12)"
+    : "rgba(248, 113, 113, 0.12)",
+  borderColor: humansWin
+    ? "rgba(74, 222, 128, 0.36)"
+    : "rgba(248, 113, 113, 0.36)",
+}));
+
+export const MatchResultText = styled(Typography)({
+  margin: 0,
+  color: "var(--text)",
+  fontSize: "0.96rem",
+  fontWeight: 700,
+  fontFamily: "inherit",
 });
 
 export const MatchControlSecondaryButton = styled(Button)({
