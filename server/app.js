@@ -1,5 +1,5 @@
 import "./instrument.js";
-import * as Sentry from "@sentry/node"
+import * as Sentry from "@sentry/node";
 import express from "express";
 import session from "express-session";
 import bodyParser from "body-parser";

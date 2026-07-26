@@ -57,17 +57,33 @@ export function subscribeToRoom(roomCode, { onRoomUpdated, onRoomDeleted }) {
   };
 }
 
-export function subscribeToMatchMessages(roomCode, onMatchMessage) {
+export function subscribeToMatchMessages(
+  roomCode,
+  { onMatchMessage, onRoomDeleted },
+) {
   const socket = getRoomsSocket();
 
   socket.emit("joinRoom", { roomCode });
 
   // Run onMatchMessage (function to update messages) when receiving "matchMessage"
-  socket.on("matchMessage", onMatchMessage);
+  if (onMatchMessage) {
+    socket.on("matchMessage", onMatchMessage);
+  }
+
+  if (onRoomDeleted) {
+    socket.on("deletedRoom", onRoomDeleted);
+  }
 
   // Return cleanup function
   return () => {
-    socket.off("matchMessage", onMatchMessage);
+    if (onMatchMessage) {
+      socket.off("matchMessage", onMatchMessage);
+    }
+
+    if (onRoomDeleted) {
+      socket.off("deletedRoom", onRoomDeleted);
+    }
+
     socket.emit("leaveRoom", { roomCode });
   };
 }

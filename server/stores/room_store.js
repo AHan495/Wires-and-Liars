@@ -26,6 +26,10 @@ function shuffledColors() {
   return colors;
 }
 
+function getPlayerLabel(index) {
+  return `Player ${index + 1}`;
+}
+
 // Random colors are assigned here
 function assignMatchParticipants(room) {
   const colors = shuffledColors();
@@ -103,19 +107,19 @@ export async function createRoom(roomInput) {
   const room = {
     id: roomCode,
     name: roomInput.name?.trim() || "Untitled Room",
-    hostname: roomInput.hostname,
+    hostname: getPlayerLabel(0),
     hostId: roomInput.hostId,
     public: roomInput.public,
     started: false,
     players: 1,
-    participants: [{ userId: roomInput.hostId, username: roomInput.hostname }],
+    participants: [{ userId: roomInput.hostId, username: getPlayerLabel(0) }],
     createdAt: new Date().toISOString(),
   };
 
   return saveRoom(room);
 }
 
-export async function joinRoom(room, userId, username) {
+export async function joinRoom(room, userId) {
   if (room.started) return null;
   if (room.participants.some((participant) => participant.userId === userId)) {
     return room;
@@ -125,7 +129,10 @@ export async function joinRoom(room, userId, username) {
   return saveRoom({
     ...room,
     players: room.participants.length + 1,
-    participants: [...room.participants, { userId, username }],
+    participants: [
+      ...room.participants,
+      { userId, username: getPlayerLabel(room.participants.length) },
+    ],
   });
 }
 

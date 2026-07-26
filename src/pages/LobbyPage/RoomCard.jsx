@@ -119,7 +119,7 @@ function RoomCard({ room, onJoinRoom }) {
           </MetaItem>
           <MetaItem component="span">
             <Radio size={13} strokeWidth={2} />
-            Host: {room.host}
+            Host: Player 1
           </MetaItem>
           <MetaItem component="span">
             <KeyRound size={13} strokeWidth={2} />

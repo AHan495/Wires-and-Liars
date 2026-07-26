@@ -38,11 +38,7 @@ roomsRouter.post("/:roomCode/join", async (req, res) => {
   if (!room) {
     return res.status(404).json({ error: "Room not found" });
   }
-  const updatedRoom = await joinRoom(
-    room,
-    req.session.userId,
-    req.session.email,
-  );
+  const updatedRoom = await joinRoom(room, req.session.userId);
   if (!updatedRoom) {
     return res.status(400).json({ error: "Failed to join room" });
   }
@@ -56,11 +52,13 @@ roomsRouter.post("/:roomCode/leave", async (req, res) => {
   if (!room) {
     return res.status(404).json({ error: "Room not found" });
   }
-  if (room.hostId === req.session.userId) {
+
+  if (room.started || room.hostId === req.session.userId) {
     await deleteRoom(room);
     await broadcastRoomDeleted(req.io, room.id);
     return res.json({ room: null, deleted: true });
   }
+
   const updatedRoom = await leaveRoom(room, req.session.userId);
   if (!updatedRoom) {
     return res.status(400).json({ error: "Failed to leave room" });

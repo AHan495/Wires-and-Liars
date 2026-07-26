@@ -113,7 +113,9 @@ async function tellAI(chatHistory, aiColour, attempts = 3) {
         );
 
         if (response.status === 503 && attempt < attempts) {
-          console.log(`AI provider: ${AI_PROVIDER} got 503, retrying (${attempt}/${attempts})`);
+          console.log(
+            `AI provider: ${AI_PROVIDER} got 503, retrying (${attempt}/${attempts})`,
+          );
           continue;
         }
 

@@ -105,23 +105,30 @@ function MatchPage() {
       .then((res) => {
         setMessages(res.room.messages ?? []);
       })
-      .catch(() => {});
+      .catch(() => {
+        navigate("/lobby");
+      });
 
-    return subscribeToMatchMessages(room.id, (message) => {
-      setMessages((currentMessages) => [...currentMessages, message]);
+    return subscribeToMatchMessages(room.id, {
+      onMatchMessage: (message) => {
+        setMessages((currentMessages) => [...currentMessages, message]);
 
-      // Read the message aloud if it does not belong to myself
-      if (
-        currentUserIdRef.current &&
-        message.senderId !== currentUserIdRef.current
-      ) {
-        setActiveSpeakerId(message.senderId);
-        setActiveMessageId(message.id);
-        speak(message.text, () => {
-          setActiveSpeakerId(null);
-          setActiveMessageId(null);
-        });
-      }
+        // Read the message aloud if it does not belong to myself
+        if (
+          currentUserIdRef.current &&
+          message.senderId !== currentUserIdRef.current
+        ) {
+          setActiveSpeakerId(message.senderId);
+          setActiveMessageId(message.id);
+          speak(message.text, () => {
+            setActiveSpeakerId(null);
+            setActiveMessageId(null);
+          });
+        }
+      },
+      onRoomDeleted: () => {
+        navigate("/lobby");
+      },
     });
   }, [navigate, room?.id, speak]);
 

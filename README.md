@@ -230,7 +230,7 @@ automatically update on the VM.
 
 To move .env files, run
 
-scp project-wires-and-liars/.env root@project-wires-and-liars.amazingcloud.space:~/wires-and-liars/.env
-scp project-wires-and-liars/server/.env root@project-wires-and-liars.amazingcloud.space:~/wires-and-liars/server/.env
+scp project-wires-and-liars/.env root@project-wires-and-liars.amazingcloud.space:~~/wires-and-liars/.env
+scp project-wires-and-liars/server/.env root@project-wires-and-liars.amazingcloud.space:~~/wires-and-liars/server/.env
 
 (Or just whatever your file directory system is)
