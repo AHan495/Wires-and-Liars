@@ -8,7 +8,7 @@ export function getGoogleLoginUrl() {
   return GOOGLE_LOGIN_BASE_URL + GOOGLE_LOGIN_ENDPOINT;
 }
 
-// Google hates fetch for some reason, so just raw redirect to localhost:3000/auth/google
+// Google hates fetch for some reason, so just raw redirect to the backend auth route.
 export function loginWithGoogle() {
   const loginUrl = getGoogleLoginUrl();
   window.location.assign(loginUrl);

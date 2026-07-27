@@ -15,7 +15,7 @@ export const billingRouter = express.Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const webhookEndpointSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET; // TODO: debug 400 errors despite using correct secret
 
-const REDIRECT_BASE_URL = "http://localhost:5173";
+const FRONTEND_BASE_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 // The Wires and Liars product in Stripe is assigned a price, which has a lookup key we can assign through the Stripe
 // account
 // We pass this lookup key for API calls that need to find the price (e.g., creating a checkout session)
@@ -59,7 +59,7 @@ billingRouter.post(
       // customer using email
       client_reference_id: String(user.id), // Unique string to reference the Stripe Checkout Session
       // {CHECKOUT_SESSION_ID} is a placeholder populated by Stripe when it redirects to success_url
-      success_url: `${REDIRECT_BASE_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${FRONTEND_BASE_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
     });
 
     console.log(session);
@@ -95,7 +95,7 @@ billingRouter.post(
 
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: user.customerId,
-      return_url: `${REDIRECT_BASE_URL}${returnPath}`, // Redirect to this once done managing billing
+      return_url: `${FRONTEND_BASE_URL}${returnPath}`, // Redirect to this once done managing billing
     });
 
     res.redirect(303, portalSession.url);

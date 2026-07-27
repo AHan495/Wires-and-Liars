@@ -6,6 +6,8 @@ import "./styles/global.css";
 import { AuthProvider } from "./auth/AuthContext.jsx";
 import App from "./App.jsx";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? "http://localhost:3000";
+
 Sentry.init({
   dsn: "https://ee0433dba04968e0445c9671b7b4f18e@o4511779530342400.ingest.us.sentry.io/4511779537420288",
   dataCollection: {
@@ -18,10 +20,7 @@ Sentry.init({
   // Tracing
   tracesSampleRate: 1.0, //  Capture 100% of the transactions
   // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
-  tracePropagationTargets: [
-    "localhost:3000",
-    /^https:\/\/api\.wiresandliars\.austinh\.app/,
-  ],
+  tracePropagationTargets: [BACKEND_URL],
   // Enable logs to be sent to Sentry
   enableLogs: true,
 });
