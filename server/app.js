@@ -15,6 +15,7 @@ import { authRouter } from "./routers/auth_router.js";
 import { roomsRouter } from "./routers/rooms_router.js";
 import { registerIOListeners } from "./sockets.js";
 import { billingRouter } from "./routers/billing_router.js";
+import { getErrorAttributes } from "./utils/logger.js";
 
 dotenv.config();
 
@@ -43,16 +44,19 @@ try {
   // Automatically detect all of your defined models and create (or modify) the tables for you.
   // This is not recommended for production-use, but that is a topic for a later time!
   await sequelize.sync({ alter: { drop: false } });
-  console.log("Connection has been established successfully.");
+  Sentry.logger.info("Connection has been established successfully.");
 } catch (error) {
-  console.error("Unable to connect to the database:", error);
+  Sentry.logger.error(
+    "Unable to connect to the database.",
+    getErrorAttributes(error),
+  );
 }
 
 // Connnect to Redis
 try {
   await connectRedis();
 } catch (error) {
-  console.error("Unable to connect to Redis:", error);
+  Sentry.logger.error("Unable to connect to Redis.", getErrorAttributes(error));
 }
 
 const httpServer = http.createServer(app);
@@ -71,7 +75,11 @@ app.use(function (req, res, next) {
 });
 
 app.use(function (req, res, next) {
-  console.log("HTTP request", req.method, req.url, req.body);
+  Sentry.logger.info("HTTP request", {
+    method: req.method,
+    url: req.url,
+    body: JSON.stringify(req.body),
+  });
   next();
 });
 
@@ -84,6 +92,12 @@ app.use("/rooms", roomsRouter);
 Sentry.setupExpressErrorHandler(app);
 
 httpServer.listen(PORT, (err) => {
-  if (err) console.log(err);
-  else console.log(`HTTP server running on port ${PORT}`);
+  if (err) {
+    Sentry.logger.error(
+      "Unable to start HTTP server.",
+      getErrorAttributes(err),
+    );
+  } else {
+    Sentry.logger.info("HTTP server running.", { port: PORT });
+  }
 });

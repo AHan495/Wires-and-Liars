@@ -1,5 +1,7 @@
+import * as Sentry from "@sentry/node";
 import { createClient } from "redis";
 import dotenv from "dotenv";
+import { getErrorAttributes } from "./utils/logger.js";
 
 dotenv.config();
 
@@ -8,7 +10,7 @@ export const redis = createClient({
 });
 
 redis.on("error", (error) => {
-  console.error("Redis client error:", error);
+  Sentry.logger.error("Redis client error.", getErrorAttributes(error));
 });
 
 export async function connectRedis() {

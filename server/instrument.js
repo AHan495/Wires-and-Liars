@@ -2,6 +2,12 @@ import * as Sentry from "@sentry/node";
 
 Sentry.init({
   dsn: "https://ce76e7e024f72d3d3aab6faec8905c1c@o4511779530342400.ingest.us.sentry.io/4511779653746688",
+  integrations: [
+    // send console.log, console.warn, and console.error calls as logs to Sentry
+    Sentry.consoleLoggingIntegration({ levels: ["log", "warn", "error"] }),
+  ],
+  // Enable logs to be sent to Sentry
+  enableLogs: true,
   dataCollection: {
     // To disable sending user data and HTTP bodies, uncomment the lines below. For more info visit:
     // https://docs.sentry.io/platforms/javascript/guides/node/configuration/options/#dataCollection

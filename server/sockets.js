@@ -1,5 +1,7 @@
+import * as Sentry from "@sentry/node";
 import { getPublicRooms, getRoom } from "./stores/room_store.js";
 import { handleMatchMessage } from "./routers/game_router.js";
+import { getErrorAttributes } from "./utils/logger.js";
 
 export async function broadcastRoomState(io, room) {
   io.to(`${room.id}`).emit("updatedRoom", room);
@@ -15,7 +17,7 @@ export function registerIOListeners(io) {
   // Listeners
   io.on("connection", (socket) => {
     // when someone connects, they are assigned a socket object.
-    console.log("a user connected");
+    Sentry.logger.info("Socket connected.", { socketId: socket.id });
 
     // Join a room and send the initial room data back to the user
     socket.on("joinRoom", async ({ roomCode }) => {
@@ -42,14 +44,17 @@ export function registerIOListeners(io) {
       if (!roomCode || !message?.text) return;
 
       handleMatchMessage(io, roomCode, message).catch((error) => {
-        console.error("Failed to handle match message:", error);
+        Sentry.logger.error("Failed to handle match message.", {
+          ...getErrorAttributes(error),
+          roomCode,
+        });
       });
     });
 
     // You can listen to socket object events. For example, this is when
     // a user disconnects
     socket.on("disconnect", () => {
-      console.log("user disconnected");
+      Sentry.logger.info("Socket disconnected.", { socketId: socket.id });
     });
   });
 }

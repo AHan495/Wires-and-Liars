@@ -2,9 +2,11 @@
 // Adapted from quickstart in Stripe docs: https://docs.stripe.com/billing/quickstart?accounts-namespace=v1
 
 import express from "express";
+import * as Sentry from "@sentry/node";
 import Stripe from "stripe";
 import { isAuthenticated } from "../middleware/auth.js";
 import { User } from "../models/user.js";
+import { getErrorAttributes } from "../utils/logger.js";
 import {
   subscribeUser,
   syncSubscription,
@@ -62,7 +64,11 @@ billingRouter.post(
       success_url: `${FRONTEND_BASE_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
     });
 
-    console.log(session);
+    Sentry.logger.info("Stripe checkout session created.", {
+      sessionId: session.id,
+      customerId: session.customer,
+      userId: user.id,
+    });
 
     // Checkout session created; now redirect to Stripe-hosted payment page
     res.redirect(303, session.url);
@@ -118,7 +124,10 @@ billingRouter.post(
         webhookEndpointSecret,
       );
     } catch (err) {
-      console.log(err.message);
+      Sentry.logger.error(
+        "Failed to construct Stripe webhook event.",
+        getErrorAttributes(err),
+      );
       return res.status(400).json({ error: err.message });
     }
 
