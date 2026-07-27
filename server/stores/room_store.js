@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import { redis } from "../redis.js";
+import { saveMatchHistories } from "../services/match_history_service.js";
 
 const MAX_PLAYERS = 2;
 const MATCH_COLORS = ["red", "blue", "green"];
@@ -51,6 +52,13 @@ function isVoteOpen(room) {
   return now >= discussionEndsAt && now < voteEndsAt;
 }
 
+function isVoteExpired(room) {
+  const voteEndsAt = new Date(room.voteEndsAt).getTime();
+  if (!Number.isFinite(voteEndsAt)) return false;
+
+  return Date.now() >= voteEndsAt;
+}
+
 function getMatchVoteContext(room, voterId, targetId) {
   if (!room.started || room.matchResult) return null;
   if (!isVoteOpen(room)) return null;
@@ -100,6 +108,28 @@ function buildMatchResult(matchVotes, humanPlayerIds, aiPlayer) {
     aiUserId: aiPlayer.userId,
     completedAt: new Date().toISOString(),
   };
+}
+
+// AI wins if vote expires and there is no result yet (humans have to vote within the time limit)
+async function finalizeExpiredMatch(room) {
+  if (!room.started || room.matchResult || !isVoteExpired(room)) return room;
+
+  const aiPlayer = (room.matchParticipants ?? []).find(
+    (participant) => participant.isAI,
+  );
+  if (!aiPlayer) return room;
+
+  const completedRoom = await saveRoom({
+    ...room,
+    matchResult: {
+      humansWin: false,
+      aiUserId: aiPlayer.userId,
+      completedAt: new Date().toISOString(),
+    },
+  });
+  await saveMatchHistories(completedRoom);
+
+  return completedRoom;
 }
 
 // Random colors are assigned here
@@ -174,10 +204,12 @@ export async function getRoom(roomCode) {
   if (!room.started) return room;
 
   // hGetAll gets everything in a redis hash
-  return {
+  const roomWithVotes = {
     ...room,
     matchVotes: await redis.hGetAll(getMatchVotesKey(normalizedRoomCode)),
   };
+
+  return finalizeExpiredMatch(roomWithVotes);
 }
 
 export async function createRoom(roomInput) {
@@ -244,7 +276,6 @@ export async function startMatch(room) {
   const roomCode = normalizeRoomCode(room.id);
 
   await redis.del(getMatchVotesKey(roomCode));
-
   return saveRoom({
     ...room,
     started: true,
@@ -258,7 +289,6 @@ export async function startMatch(room) {
   });
 }
 
-// Update messages
 export async function appendMatchMessage(room, message) {
   const updatedRoom = {
     ...room,
@@ -269,8 +299,20 @@ export async function appendMatchMessage(room, message) {
   return updatedRoom;
 }
 
-export async function endMatch(room) {
-  return saveRoom({ ...room, started: false });
+
+export async function endMatch(roomCode, userId) {
+  const room = await getRoom(roomCode);
+  if (!room?.matchResult) return null;
+  if (
+    !room.matchParticipants?.some(
+      (participant) => participant.userId === userId,
+    )
+  ) {
+    return null;
+  }
+
+  await deleteRoom(room);
+  return { room: null, deleted: true };
 }
 
 export async function castMatchVote(roomCode, voterId, targetId) {
@@ -303,11 +345,13 @@ export async function castMatchVote(roomCode, voterId, targetId) {
     );
 
   if (matchResult && !latestRoom.matchResult) {
-    return saveRoom({
+    const completedRoom = await saveRoom({
       ...latestRoom,
       matchVotes,
       matchResult,
     });
+    await saveMatchHistories(completedRoom);
+    return completedRoom;
   }
 
   return {

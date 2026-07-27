@@ -17,6 +17,7 @@ import {
   MatchIdentityText,
   MatchMain,
   MatchResultPanel,
+  MatchResultCountdown,
   MatchResultText,
   MatchShell,
   MatchStageText,
@@ -29,7 +30,12 @@ import {
   MatchVoteTitle,
   MatchVoiceGrid,
 } from "./MatchPage.styles";
-import { getRoom, leaveRoom, voteInMatch } from "../../services/rooms-api";
+import {
+  endMatch,
+  getRoom,
+  leaveRoom,
+  voteInMatch,
+} from "../../services/rooms-api";
 import { getCurrentUser } from "../../services/auth-api";
 import {
   sendMatchMessage,
@@ -53,6 +59,8 @@ const participantAccent = {
     glow: "rgba(96, 165, 250, 0.16)",
   },
 };
+
+const RESULT_DISPLAY_SECONDS = 5;
 
 function formatTime(totalSeconds) {
   const minutes = Math.floor(totalSeconds / 60);
@@ -82,6 +90,9 @@ function MatchPage() {
   const [activeSpeakerId, setActiveSpeakerId] = useState(null);
   const [activeMessageId, setActiveMessageId] = useState(null);
   const [isVoting, setIsVoting] = useState(false);
+  const [endingCountdown, setEndingCountdown] = useState(
+    RESULT_DISPLAY_SECONDS,
+  );
 
   // Uses useRef, because we don't want (no need) to re-render when the value changes
   // This is to check whether the message belongs to myself or not
@@ -99,6 +110,13 @@ function MatchPage() {
     !room.matchResult &&
     discussionRemainingSeconds === 0 &&
     voteRemainingSeconds > 0;
+  const isVoteExpired =
+    room?.started &&
+    !room.matchResult &&
+    discussionRemainingSeconds === 0 &&
+    voteRemainingSeconds === 0;
+  const matchResult = room?.matchResult ?? null;
+  const matchCompletedAt = matchResult?.completedAt;
 
   // Function passed to useVoiceIO
   function handleRecognizedSpeech(text) {
@@ -187,6 +205,41 @@ function MatchPage() {
     });
   }, [navigate, room?.id, speak]);
 
+  // finalize after the vote time limit expires
+  useEffect(() => {
+    if (!room?.id || !isVoteExpired) {
+      return;
+    }
+
+    getRoom(room.id)
+      .then((res) => {
+        setRoom(res.room);
+        setMessages(res.room.messages ?? []);
+      });
+  }, [isVoteExpired, room?.id]);
+
+  // automatically redirect to lobby after constant time after the vote ends
+  useEffect(() => {
+    if (!room?.id || !matchCompletedAt) return undefined;
+
+    // count down every 1 second for displaying
+    const intervalId = window.setInterval(() => {
+      setEndingCountdown((currentValue) => Math.max(0, currentValue - 1));
+    }, 1000);
+
+    // redirect to lobby after constant time
+    const timeoutId = window.setTimeout(() => {
+      endMatch(room.id).finally(() => {
+        navigate("/lobby");
+      });
+    }, RESULT_DISPLAY_SECONDS * 1000);
+
+    return () => {
+      window.clearInterval(intervalId);
+      window.clearTimeout(timeoutId);
+    };
+  }, [matchCompletedAt, navigate, room?.id]);
+
   // Set participants for UI
   const participants = (room?.matchParticipants ?? []).map((participant) => ({
     id: participant.userId,
@@ -221,7 +274,6 @@ function MatchPage() {
     (participant) => participant.isCurrentUser,
   );
   const aiParticipant = participants.find((participant) => participant.isAI);
-  const matchResult = room?.matchResult ?? null;
   const selectedVoteId = room?.matchVotes?.[currentUser.userId] ?? null;
   const timerLabel = isDiscussionActive
     ? formatTime(discussionRemainingSeconds)
@@ -389,39 +441,40 @@ function MatchPage() {
                 ? `Humans win. The AI was ${aiParticipant?.label ?? "unknown"}.`
                 : `Humans lose. The AI was ${aiParticipant?.label ?? "unknown"}.`}
             </MatchResultText>
+            <MatchResultCountdown component="span" aria-live="polite">
+              Ending in {endingCountdown}s
+            </MatchResultCountdown>
           </MatchResultPanel>
         ) : null}
 
-        <MatchControls component="footer" aria-label="Game controls">
-          <MatchControlSecondaryButton
-            type="button"
-            variant="outlined"
-            startIcon={
-              isListening ? (
-                <MicOff size={16} strokeWidth={2} />
-              ) : (
-                <Mic size={16} strokeWidth={2} />
-              )
-            }
-            onClick={startListening}
-            disabled={!currentUser.userId || isListening || !isDiscussionActive}
-          >
-            {isListening
-              ? "Listening..."
-              : isDiscussionActive
-                ? "Speak"
-                : "Speech closed"}
-          </MatchControlSecondaryButton>
+        {isDiscussionActive ? (
+          <MatchControls component="footer" aria-label="Game controls">
+            <MatchControlSecondaryButton
+              type="button"
+              variant="outlined"
+              startIcon={
+                isListening ? (
+                  <MicOff size={16} strokeWidth={2} />
+                ) : (
+                  <Mic size={16} strokeWidth={2} />
+                )
+              }
+              onClick={startListening}
+              disabled={!currentUser.userId || isListening}
+            >
+              {isListening ? "Listening..." : "Speak"}
+            </MatchControlSecondaryButton>
 
-          <MatchControlDangerButton
-            type="button"
-            variant="contained"
-            startIcon={<LogOut size={16} strokeWidth={2} />}
-            onClick={handleLeaveGame}
-          >
-            Leave game
-          </MatchControlDangerButton>
-        </MatchControls>
+            <MatchControlDangerButton
+              type="button"
+              variant="contained"
+              startIcon={<LogOut size={16} strokeWidth={2} />}
+              onClick={handleLeaveGame}
+            >
+              Leave game
+            </MatchControlDangerButton>
+          </MatchControls>
+        ) : null}
       </MatchShell>
     </MatchMain>
   );

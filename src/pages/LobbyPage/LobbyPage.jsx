@@ -23,6 +23,7 @@ import {
 import RoomCard from "./RoomCard";
 import { getPublicRooms, joinRoom } from "../../services/rooms-api";
 import { subscribeToPublicRooms } from "../../services/rooms-socket";
+import AppNav from "../../components/AppNav";
 
 function getRoomSearchValues(room) {
   return [room.name, room.id].filter(Boolean);
@@ -103,6 +104,7 @@ function LobbyPage() {
 
   return (
     <LobbyMain component="main">
+      <AppNav />
       <LobbyLayout component="section" aria-label="Lobby layout">
         <RoomsPanel component="section">
           <PanelHeader component="header">

@@ -10,6 +10,7 @@ import { Server } from "socket.io";
 import { sequelize } from "./datasource.js";
 import { connectRedis } from "./redis.js";
 import "./models/user.js";
+import "./models/match_history.js";
 import { authRouter } from "./routers/auth_router.js";
 import { roomsRouter } from "./routers/rooms_router.js";
 import { registerIOListeners } from "./sockets.js";

@@ -12,6 +12,7 @@ import {
   startMatch,
 } from "../stores/room_store.js";
 import { broadcastRoomDeleted, broadcastRoomState } from "../sockets.js";
+import { MatchHistory } from "../models/match_history.js";
 
 export const roomsRouter = Router();
 roomsRouter.use(isAuthenticated);
@@ -20,6 +21,16 @@ roomsRouter.use(isAuthenticated);
 roomsRouter.get("/", async (req, res) => {
   const publicRooms = await getPublicRooms();
   res.json({ rooms: publicRooms });
+});
+
+// get match history for the authenticated user
+roomsRouter.get("/histories", async (req, res) => {
+  const histories = await MatchHistory.findAll({
+    where: { userId: req.session.userId },
+    order: [["createdAt", "DESC"]],
+  });
+
+  res.json({ histories });
 });
 
 // create a new room
@@ -94,12 +105,13 @@ roomsRouter.post("/:roomCode/end", async (req, res) => {
   if (!room) {
     return res.status(404).json({ error: "Room not found" });
   }
-  const updatedRoom = await endMatch(room);
-  if (!updatedRoom) {
+  const endResult = await endMatch(req.params.roomCode, req.session.userId);
+  if (!endResult) {
     return res.status(500).json({ error: "Failed to end match" });
   }
-  await broadcastRoomState(req.io, updatedRoom);
-  res.json({ room: updatedRoom });
+
+  await broadcastRoomDeleted(req.io, room.id);
+  res.json(endResult);
 });
 
 // cast a match vote for who the humans think is AI
