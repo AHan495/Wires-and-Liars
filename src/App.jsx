@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 import MatchPage from "./pages/MatchPage/MatchPage";
 import PaymentPage from "./pages/PaymentPage/PaymentPage";
 import PaymentTransitionPage from "./pages/PaymentPage/PaymentTransitionPage";
+import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import RoomPage from "./pages/RoomPage/RoomPage";
 import AuthRequired from "./AuthRequired";
 import SubscriptionRequired from "./SubscriptionRequired";
@@ -17,9 +18,10 @@ function App() {
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/payment/success" element={<PaymentTransitionPage />} />
         <Route element={<SubscriptionRequired />}>
-          <Route path="/lobby" element={<LobbyPage />} />
-          <Route path="/room" element={<RoomPage />} />
-          <Route path="/match" element={<MatchPage />} />
+        <Route path="/lobby" element={<LobbyPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/room" element={<RoomPage />} />
+        <Route path="/match" element={<MatchPage />} />
         </Route>
       </Route>
     </Routes>

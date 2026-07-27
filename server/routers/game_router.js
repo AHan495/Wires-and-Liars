@@ -36,6 +36,47 @@ const RESPONSE_FORMAT_PROMPT = `Return exactly one JSON object that matches this
 const AI_PROVIDER = process.env.AI_PROVIDER ?? "groq";
 const GROQ_MODEL = process.env.GROQ_MODEL ?? "openai/gpt-oss-20b";
 
+function getGroqModelFamily(model) {
+  const normalizedModel = model.toLowerCase();
+
+  if (normalizedModel.startsWith("openai/")) return "openai";
+  if (normalizedModel.includes("llama") || normalizedModel.includes("llma")) {
+    return "llama";
+  }
+
+  return "generic";
+}
+
+function getGroqResponseFormat(model) {
+  switch (getGroqModelFamily(model)) {
+    case "openai":
+      return {
+        type: "json_schema",
+        json_schema: {
+          name: "hidden_ai_match_response",
+          strict: true,
+          schema: AI_RESPONSE_SCHEMA,
+        },
+      };
+    case "llama":
+      return {
+        type: "json_object",
+      };
+    default:
+      return {
+        type: "json_object",
+      };
+  }
+}
+
+function createGroqChatCompletionBody(messages) {
+  return {
+    model: GROQ_MODEL,
+    messages,
+    response_format: getGroqResponseFormat(GROQ_MODEL),
+  };
+}
+
 // Create message
 function createMatchMessage({ senderId, color, text }) {
   return {
@@ -67,6 +108,8 @@ function isDiscussionOpen(room) {
 function parseAIText(rawText) {
   try {
     const parsed = JSON.parse(rawText);
+    if (parsed.shouldRespond === false) return "";
+
     return parsed.text?.trim() ?? "";
   } catch {
     return "";
@@ -111,35 +154,21 @@ async function tellAI(chatHistory, aiColour, attempts = 3) {
               Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              model: GROQ_MODEL,
-              messages,
-              response_format: {
-                type: "json_schema",
-                json_schema: {
-                  name: "hidden_ai_match_response",
-                  strict: true,
-                  schema: AI_RESPONSE_SCHEMA,
-                },
-              },
-            }),
+            body: JSON.stringify(createGroqChatCompletionBody(messages)),
           },
         );
 
         if (response.status === 503 && attempt < attempts) {
-          console.log(
-            `AI provider: ${AI_PROVIDER} got 503, retrying (${attempt}/${attempts})`,
-          );
           continue;
+        }
+
+        if (!response.ok) {
+          return "";
         }
 
         const data = await response.json();
         const rawText = data.choices?.[0]?.message?.content?.trim() ?? "";
         const parsedText = parseAIText(rawText);
-
-        console.log("AI provider:", AI_PROVIDER);
-        console.log("AI raw response:", rawText);
-        console.log("AI parsed text:", parsedText || "(empty)");
 
         return parsedText;
       }
@@ -179,7 +208,6 @@ export async function handleMatchMessage(io, roomCode, playerMessage) {
   const aiText = await tellAI(chatHistory, aiPlayer.color).catch(() => "");
 
   if (!aiText) {
-    console.log("AI skipped response.");
     return humanMessage;
   }
 
