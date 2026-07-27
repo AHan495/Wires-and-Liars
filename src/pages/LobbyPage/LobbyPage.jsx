@@ -23,9 +23,10 @@ import {
 import RoomCard from "./RoomCard";
 import { getPublicRooms, joinRoom } from "../../services/rooms-api";
 import { subscribeToPublicRooms } from "../../services/rooms-socket";
+import AppNav from "../../components/AppNav";
 
 function getRoomSearchValues(room) {
-  return [room.name, room.host, room.hostId, room.id].filter(Boolean);
+  return [room.name, room.id].filter(Boolean);
 }
 
 function LobbyPage() {
@@ -103,6 +104,7 @@ function LobbyPage() {
 
   return (
     <LobbyMain component="main">
+      <AppNav />
       <LobbyLayout component="section" aria-label="Lobby layout">
         <RoomsPanel component="section">
           <PanelHeader component="header">
@@ -120,7 +122,7 @@ function LobbyPage() {
                 <Search size={15} strokeWidth={2} />
                 <TextInput
                   type="text"
-                  placeholder="Room name, host, or code"
+                  placeholder="Room name or code"
                   value={searchText}
                   onChange={(event) => setSearchText(event.target.value)}
                 />

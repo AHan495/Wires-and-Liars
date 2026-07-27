@@ -22,6 +22,17 @@ export function getRoom(roomCode) {
   });
 }
 
+export function getMatchHistories() {
+  return fetch(`${API_BASE_URL}/rooms/histories`, {
+    credentials: "include",
+  }).then((res) => {
+    if (!res.ok) {
+      throw new Error();
+    }
+    return res.json();
+  });
+}
+
 export function createRoom(name, isPublic) {
   return fetch(`${API_BASE_URL}/rooms`, {
     method: "POST",
@@ -62,6 +73,18 @@ export function startMatch(roomCode) {
   });
 }
 
+export function endMatch(roomCode) {
+  return fetch(`${API_BASE_URL}/rooms/${encodeURIComponent(roomCode)}/end`, {
+    method: "POST",
+    credentials: "include",
+  }).then((res) => {
+    if (!res.ok) {
+      throw new Error();
+    }
+    return res.json();
+  });
+}
+
 export function deleteRoom(roomCode) {
   return fetch(`${API_BASE_URL}/rooms/${encodeURIComponent(roomCode)}`, {
     method: "DELETE",
@@ -78,6 +101,22 @@ export function leaveRoom(roomCode) {
   return fetch(`${API_BASE_URL}/rooms/${encodeURIComponent(roomCode)}/leave`, {
     method: "POST",
     credentials: "include",
+  }).then((res) => {
+    if (!res.ok) {
+      throw new Error();
+    }
+    return res.json();
+  });
+}
+
+export function voteInMatch(roomCode, targetId) {
+  return fetch(`${API_BASE_URL}/rooms/${encodeURIComponent(roomCode)}/vote`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ targetId }),
   }).then((res) => {
     if (!res.ok) {
       throw new Error();

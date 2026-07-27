@@ -14,18 +14,16 @@ Sentry.init({
     // userInfo: false,
     // httpBodies: []
   },
-  integrations: [
-    Sentry.browserTracingIntegration()
-  ],
+  integrations: [Sentry.browserTracingIntegration()],
   // Tracing
   tracesSampleRate: 1.0, //  Capture 100% of the transactions
   // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
   tracePropagationTargets: [
     "localhost:3000",
-    /^https:\/\/api\.wiresandliars\.austinh\.app/
+    /^https:\/\/api\.wiresandliars\.austinh\.app/,
   ],
   // Enable logs to be sent to Sentry
-  enableLogs: true
+  enableLogs: true,
 });
 
 createRoot(document.getElementById("root")).render(

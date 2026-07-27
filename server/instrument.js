@@ -1,4 +1,4 @@
-import * as Sentry from "@sentry/node"
+import * as Sentry from "@sentry/node";
 
 Sentry.init({
   dsn: "https://ce76e7e024f72d3d3aab6faec8905c1c@o4511779530342400.ingest.us.sentry.io/4511779653746688",
