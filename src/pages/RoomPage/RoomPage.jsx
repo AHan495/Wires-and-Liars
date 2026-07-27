@@ -46,6 +46,10 @@ function getParticipantRole(room, participant) {
   return "Player";
 }
 
+function getParticipantLabel(index) {
+  return `Player ${index + 1}`;
+}
+
 function RoomPage() {
   const navigate = useNavigate();
   const initialRoom = useRoomFromLocationState();
@@ -189,7 +193,7 @@ function RoomPage() {
               <RoomDetailItem>
                 <RoomDetailLabel component="span">Host</RoomDetailLabel>
                 <RoomDetailValue component="strong">
-                  {room.hostname}
+                  {getParticipantLabel(0)}
                 </RoomDetailValue>
               </RoomDetailItem>
               <RoomDetailItem>
@@ -218,10 +222,10 @@ function RoomPage() {
             </RoomDetailHeading>
 
             <RoomDetailList>
-              {room.participants.map((participant) => (
+              {room.participants.map((participant, index) => (
                 <RoomPlayerCard key={participant.userId}>
                   <RoomPlayerName component="span">
-                    {participant.username}
+                    {getParticipantLabel(index)}
                   </RoomPlayerName>
                   <RoomPlayerRole component="span">
                     {getParticipantRole(room, participant)}

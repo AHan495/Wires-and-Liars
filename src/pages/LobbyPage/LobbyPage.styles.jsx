@@ -3,6 +3,9 @@ import { styled } from "@mui/system";
 
 export const LobbyMain = styled(Box)({
   height: "100vh",
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px",
   padding: "20px 24px",
   overflow: "hidden",
   color: "var(--text)",
@@ -18,6 +21,7 @@ export const LobbyMain = styled(Box)({
 });
 
 export const LobbyLayout = styled(Box)({
+  flex: 1,
   display: "grid",
   gridTemplateColumns: "minmax(0, 1.6fr) minmax(320px, 0.9fr)",
   gap: "20px",

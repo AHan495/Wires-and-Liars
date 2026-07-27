@@ -1,3 +1,5 @@
+import "./instrument.js";
+import * as Sentry from "@sentry/node";
 import express from "express";
 import session from "express-session";
 import bodyParser from "body-parser";
@@ -7,6 +9,8 @@ import http from "http";
 import { Server } from "socket.io";
 import { sequelize } from "./datasource.js";
 import { connectRedis } from "./redis.js";
+import "./models/user.js";
+import "./models/match_history.js";
 import { authRouter } from "./routers/auth_router.js";
 import { roomsRouter } from "./routers/rooms_router.js";
 import { registerIOListeners } from "./sockets.js";
@@ -15,17 +19,16 @@ import { billingRouter } from "./routers/billing_router.js";
 dotenv.config();
 
 export const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     credentials: true,
   }),
 );
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
 
 app.use(
   session({
@@ -55,7 +58,7 @@ try {
 const httpServer = http.createServer(app);
 export const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     credentials: true,
   },
 });
@@ -74,9 +77,13 @@ app.use(function (req, res, next) {
 
 app.use("/auth", authRouter);
 app.use("/billing", billingRouter);
+app.use(bodyParser.json());
 app.use("/rooms", roomsRouter);
+
+// Must come after routes, and before other error middleware
+Sentry.setupExpressErrorHandler(app);
 
 httpServer.listen(PORT, (err) => {
   if (err) console.log(err);
-  else console.log("HTTP server on http://localhost:%s", PORT);
+  else console.log(`HTTP server running on port ${PORT}`);
 });

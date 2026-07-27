@@ -77,6 +77,13 @@ export const MatchTimer = styled(Typography)({
   borderColor: "rgba(248, 113, 113, 0.38)",
 });
 
+export const MatchStageText = styled(Typography)({
+  color: "var(--muted)",
+  fontSize: "0.86rem",
+  fontWeight: 600,
+  fontFamily: "inherit",
+});
+
 export const MatchVoiceGrid = styled(Box, {
   shouldForwardProp: (prop) => prop !== "isHistoryOpen",
 })(({ isHistoryOpen }) => ({
@@ -169,19 +176,132 @@ export const MatchControls = styled(Box)({
   },
 });
 
+export const MatchVotePanel = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  gap: "12px",
+  padding: "16px",
+  border: "1px solid rgba(96, 165, 250, 0.28)",
+  borderRadius: "14px",
+  background:
+    "linear-gradient(180deg, rgba(96, 165, 250, 0.12), rgba(22, 32, 51, 0.76))",
+  boxShadow: "0 16px 34px rgba(2, 8, 23, 0.22)",
+});
+
+export const MatchVoteTitle = styled(Typography)({
+  margin: 0,
+  color: "var(--text)",
+  fontSize: "0.94rem",
+  fontWeight: 700,
+  fontFamily: "inherit",
+});
+
+export const MatchVoteOptions = styled(Box)({
+  display: "grid",
+  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+  gap: "10px",
+  "@media (max-width: 720px)": {
+    gridTemplateColumns: "1fr",
+  },
+});
+
+export const MatchVoteButton = styled(Button, {
+  shouldForwardProp: (prop) => !["selected", "accentColor"].includes(prop),
+})(({ selected, accentColor }) => ({
+  minHeight: "48px",
+  borderRadius: "12px",
+  borderWidth: "1px",
+  textTransform: "none",
+  fontSize: "0.92rem",
+  fontWeight: 800,
+  color: selected ? "#ffffff" : "var(--text)",
+  borderColor: selected ? accentColor : "var(--border)",
+  backgroundColor: selected
+    ? "rgba(96, 165, 250, 0.22)"
+    : "rgba(15, 23, 42, 0.45)",
+  boxShadow: selected ? `0 0 0 3px ${accentColor}33` : "none",
+  "&:hover, &:focus-visible": {
+    borderColor: accentColor,
+    backgroundColor: "rgba(96, 165, 250, 0.2)",
+  },
+  "&.Mui-disabled": {
+    color: selected ? "#ffffff" : "rgba(148, 163, 184, 0.72)",
+    borderColor: selected ? accentColor : "rgba(148, 163, 184, 0.24)",
+    backgroundColor: selected
+      ? "rgba(96, 165, 250, 0.28)"
+      : "rgba(15, 23, 42, 0.28)",
+    boxShadow: selected ? `0 0 0 3px ${accentColor}40` : "none",
+    opacity: 1,
+  },
+}));
+
+export const MatchResultPanel = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "humansWin",
+})(({ humansWin }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: "12px",
+  padding: "14px",
+  border: "1px solid var(--border)",
+  borderRadius: "14px",
+  backgroundColor: humansWin
+    ? "rgba(74, 222, 128, 0.12)"
+    : "rgba(248, 113, 113, 0.12)",
+  borderColor: humansWin
+    ? "rgba(74, 222, 128, 0.36)"
+    : "rgba(248, 113, 113, 0.36)",
+  "@media (max-width: 720px)": {
+    alignItems: "flex-start",
+    flexDirection: "column",
+  },
+}));
+
+export const MatchResultText = styled(Typography)({
+  margin: 0,
+  color: "var(--text)",
+  fontSize: "0.96rem",
+  fontWeight: 700,
+  fontFamily: "inherit",
+});
+
+export const MatchResultCountdown = styled(Typography)({
+  flex: "0 0 auto",
+  minWidth: "128px",
+  padding: "7px 10px",
+  border: "1px solid rgba(96, 165, 250, 0.34)",
+  borderRadius: "999px",
+  color: "#dbeafe",
+  backgroundColor: "rgba(37, 99, 235, 0.16)",
+  fontSize: "0.82rem",
+  fontWeight: 800,
+  textAlign: "center",
+  fontFamily: "inherit",
+  fontVariantNumeric: "tabular-nums",
+});
+
 export const MatchControlSecondaryButton = styled(Button)({
   borderRadius: "20px",
-  minHeight: "36px",
-  padding: "8px 14px",
-  fontSize: "0.82rem",
-  fontWeight: 500,
+  minHeight: "40px",
+  padding: "9px 16px",
+  fontSize: "0.86rem",
+  fontWeight: 700,
   textTransform: "none",
   color: "var(--text)",
-  borderColor: "var(--border)",
-  backgroundColor: "rgba(22, 32, 51, 0.74)",
+  borderColor: "rgba(96, 165, 250, 0.38)",
+  backgroundColor: "rgba(37, 99, 235, 0.16)",
   "&:hover, &:focus-visible": {
-    borderColor: "var(--border-strong)",
-    backgroundColor: "rgba(22, 32, 51, 0.74)",
+    borderColor: "rgba(96, 165, 250, 0.58)",
+    backgroundColor: "rgba(37, 99, 235, 0.22)",
+  },
+  "&.Mui-disabled": {
+    color: "#cbd5e1",
+    borderColor: "rgba(148, 163, 184, 0.34)",
+    backgroundColor: "rgba(51, 65, 85, 0.56)",
+    opacity: 1,
+    "& .MuiButton-startIcon": {
+      color: "#cbd5e1",
+    },
   },
 });
 

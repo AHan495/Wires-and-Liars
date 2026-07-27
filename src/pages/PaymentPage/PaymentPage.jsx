@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { CheckCircle2, Lock } from "lucide-react";
+import { CheckCircle2, CreditCard, Lock } from "lucide-react";
+import BillingPortalForm from "./BillingPortalForm";
 import CheckoutForm from "./CheckoutForm";
 import {
   CheckoutButton,
@@ -19,6 +20,7 @@ import {
 
 function PaymentPage() {
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+  const [isBillingPortalLoading, setIsBillingPortalLoading] = useState(false);
 
   return (
     <PaymentMain component="main">
@@ -51,6 +53,22 @@ function PaymentPage() {
                 : "Continue to Stripe"}
             </CheckoutButton>
           </CheckoutForm>
+
+          <BillingPortalForm
+            onSubmit={() => setIsBillingPortalLoading(true)}
+            returnPath="/payment"
+          >
+            <CheckoutButton
+              type="submit"
+              variant="contained"
+              disabled={isBillingPortalLoading}
+              startIcon={<CreditCard size={17} strokeWidth={2.2} />}
+            >
+              {isBillingPortalLoading
+                ? "Opening billing portal..."
+                : "Manage billing"}
+            </CheckoutButton>
+          </BillingPortalForm>
 
           <SecureNote>
             <Lock size={16} strokeWidth={2.2} aria-hidden="true" />

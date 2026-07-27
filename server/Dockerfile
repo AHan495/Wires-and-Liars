@@ -1,0 +1,14 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+COPY server ./server
+
+EXPOSE 3000
+
+CMD ["node", "server/app.js"]
+
+# Friendly comment to re run work flow! 

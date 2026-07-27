@@ -2,6 +2,7 @@ import { Router } from "express";
 import { isAuthenticated } from "../middleware/auth.js";
 import {
   createRoom,
+  castMatchVote,
   deleteRoom,
   endMatch,
   getPublicRooms,
@@ -11,6 +12,7 @@ import {
   startMatch,
 } from "../stores/room_store.js";
 import { broadcastRoomDeleted, broadcastRoomState } from "../sockets.js";
+import { MatchHistory } from "../models/match_history.js";
 
 export const roomsRouter = Router();
 roomsRouter.use(isAuthenticated);
@@ -21,12 +23,22 @@ roomsRouter.get("/", async (req, res) => {
   res.json({ rooms: publicRooms });
 });
 
+// get match history for the authenticated user
+roomsRouter.get("/histories", async (req, res) => {
+  const histories = await MatchHistory.findAll({
+    where: { userId: req.session.userId },
+    order: [["createdAt", "DESC"]],
+  });
+
+  res.json({ histories });
+});
+
 // create a new room
 roomsRouter.post("/", async (req, res) => {
   const newRoom = await createRoom({
     ...req.body,
     hostId: req.session.userId,
-    hostname: req.session.user.name,
+    hostname: req.session.email,
   });
   await broadcastRoomState(req.io, newRoom);
   res.json({ room: newRoom });
@@ -38,11 +50,7 @@ roomsRouter.post("/:roomCode/join", async (req, res) => {
   if (!room) {
     return res.status(404).json({ error: "Room not found" });
   }
-  const updatedRoom = await joinRoom(
-    room,
-    req.session.userId,
-    req.session.user.name,
-  );
+  const updatedRoom = await joinRoom(room, req.session.userId);
   if (!updatedRoom) {
     return res.status(400).json({ error: "Failed to join room" });
   }
@@ -56,11 +64,13 @@ roomsRouter.post("/:roomCode/leave", async (req, res) => {
   if (!room) {
     return res.status(404).json({ error: "Room not found" });
   }
-  if (room.hostId === req.session.userId) {
+
+  if (room.started || room.hostId === req.session.userId) {
     await deleteRoom(room);
     await broadcastRoomDeleted(req.io, room.id);
     return res.json({ room: null, deleted: true });
   }
+
   const updatedRoom = await leaveRoom(room, req.session.userId);
   if (!updatedRoom) {
     return res.status(400).json({ error: "Failed to leave room" });
@@ -95,10 +105,31 @@ roomsRouter.post("/:roomCode/end", async (req, res) => {
   if (!room) {
     return res.status(404).json({ error: "Room not found" });
   }
-  const updatedRoom = await endMatch(room);
-  if (!updatedRoom) {
+  const endResult = await endMatch(req.params.roomCode, req.session.userId);
+  if (!endResult) {
     return res.status(500).json({ error: "Failed to end match" });
   }
+
+  await broadcastRoomDeleted(req.io, room.id);
+  res.json(endResult);
+});
+
+// cast a match vote for who the humans think is AI
+roomsRouter.post("/:roomCode/vote", async (req, res) => {
+  const room = await getRoom(req.params.roomCode);
+  if (!room) {
+    return res.status(404).json({ error: "Room not found" });
+  }
+
+  const updatedRoom = await castMatchVote(
+    req.params.roomCode,
+    req.session.userId,
+    req.body.targetId,
+  );
+  if (!updatedRoom) {
+    return res.status(400).json({ error: "Failed to cast vote" });
+  }
+
   await broadcastRoomState(req.io, updatedRoom);
   res.json({ room: updatedRoom });
 });

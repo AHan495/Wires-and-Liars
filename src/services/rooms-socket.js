@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const SOCKET_BASE_URL = "http://localhost:3000";
+const SOCKET_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 // Singleton
 let roomsSocket;
@@ -57,17 +57,41 @@ export function subscribeToRoom(roomCode, { onRoomUpdated, onRoomDeleted }) {
   };
 }
 
-export function subscribeToMatchMessages(roomCode, onMatchMessage) {
+export function subscribeToMatchMessages(
+  roomCode,
+  { onMatchMessage, onRoomUpdated, onRoomDeleted },
+) {
   const socket = getRoomsSocket();
 
   socket.emit("joinRoom", { roomCode });
 
   // Run onMatchMessage (function to update messages) when receiving "matchMessage"
-  socket.on("matchMessage", onMatchMessage);
+  if (onMatchMessage) {
+    socket.on("matchMessage", onMatchMessage);
+  }
+
+  if (onRoomUpdated) {
+    socket.on("updatedRoom", onRoomUpdated);
+  }
+
+  if (onRoomDeleted) {
+    socket.on("deletedRoom", onRoomDeleted);
+  }
 
   // Return cleanup function
   return () => {
-    socket.off("matchMessage", onMatchMessage);
+    if (onMatchMessage) {
+      socket.off("matchMessage", onMatchMessage);
+    }
+
+    if (onRoomUpdated) {
+      socket.off("updatedRoom", onRoomUpdated);
+    }
+
+    if (onRoomDeleted) {
+      socket.off("deletedRoom", onRoomDeleted);
+    }
+
     socket.emit("leaveRoom", { roomCode });
   };
 }

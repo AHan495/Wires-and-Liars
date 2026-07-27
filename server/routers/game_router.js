@@ -34,7 +34,7 @@ const RESPONSE_FORMAT_PROMPT = `Return exactly one JSON object that matches this
 )}. If you should stay silent, set shouldRespond to false and text to an empty string. If you should speak, set shouldRespond to true and make text one concise sentence. Do not return markdown, code fences, comments, or any text outside the JSON object. If the conversation is not relevant to you, or if you have no reason to speak, remain silent.`;
 
 const AI_PROVIDER = process.env.AI_PROVIDER ?? "groq";
-const GROQ_MODEL = process.env.GROQ_MODEL ?? "llama-3.1-8b-instant";
+const GROQ_MODEL = process.env.GROQ_MODEL ?? "openai/gpt-oss-20b";
 
 // Create message
 function createMatchMessage({ senderId, color, text }) {
@@ -55,6 +55,13 @@ function getSpeakerColor(room, senderId) {
   return room.matchParticipants?.find(
     (participant) => participant.userId === senderId,
   )?.color;
+}
+
+function isDiscussionOpen(room) {
+  const discussionEndsAt = new Date(room.discussionEndsAt).getTime();
+  if (!Number.isFinite(discussionEndsAt)) return true;
+
+  return Date.now() < discussionEndsAt;
 }
 
 function parseAIText(rawText) {
@@ -90,36 +97,54 @@ function makePrompt(chatHistory, aiColour) {
 }
 
 // Function to ask AI for a response
-async function tellAI(chatHistory, aiColour) {
+async function tellAI(chatHistory, aiColour, attempts = 3) {
   const messages = makePrompt(chatHistory, aiColour);
 
   switch (AI_PROVIDER) {
     case "groq": {
-      const response = await fetch(
-        "https://api.groq.com/openai/v1/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
-            "Content-Type": "application/json",
+      for (let attempt = 1; attempt <= attempts; attempt++) {
+        const response = await fetch(
+          "https://api.groq.com/openai/v1/chat/completions",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              model: GROQ_MODEL,
+              messages,
+              response_format: {
+                type: "json_schema",
+                json_schema: {
+                  name: "hidden_ai_match_response",
+                  strict: true,
+                  schema: AI_RESPONSE_SCHEMA,
+                },
+              },
+            }),
           },
-          body: JSON.stringify({
-            model: GROQ_MODEL,
-            messages,
-            response_format: { type: "json_object" },
-          }),
-        },
-      );
+        );
 
-      const data = await response.json();
-      const rawText = data.choices?.[0]?.message?.content?.trim() ?? "";
-      const parsedText = parseAIText(rawText);
+        if (response.status === 503 && attempt < attempts) {
+          console.log(
+            `AI provider: ${AI_PROVIDER} got 503, retrying (${attempt}/${attempts})`,
+          );
+          continue;
+        }
 
-      console.log("AI provider:", AI_PROVIDER);
-      console.log("AI raw response:", rawText);
-      console.log("AI parsed text:", parsedText || "(empty)");
+        const data = await response.json();
+        const rawText = data.choices?.[0]?.message?.content?.trim() ?? "";
+        const parsedText = parseAIText(rawText);
 
-      return parsedText;
+        console.log("AI provider:", AI_PROVIDER);
+        console.log("AI raw response:", rawText);
+        console.log("AI parsed text:", parsedText || "(empty)");
+
+        return parsedText;
+      }
+
+      return "";
     }
     default:
       return "";
@@ -130,6 +155,7 @@ async function tellAI(chatHistory, aiColour) {
 export async function handleMatchMessage(io, roomCode, playerMessage) {
   const room = await getRoom(roomCode);
   if (!room || !room.started) return null;
+  if (!isDiscussionOpen(room) || room.matchResult) return null;
 
   const humanMessage = createMatchMessage({
     senderId: playerMessage.senderId,
@@ -158,7 +184,9 @@ export async function handleMatchMessage(io, roomCode, playerMessage) {
   }
 
   const latestRoom = await getRoom(roomCode);
-  if (!latestRoom) return humanMessage;
+  if (!latestRoom || !isDiscussionOpen(latestRoom) || latestRoom.matchResult) {
+    return humanMessage;
+  }
 
   const aiMessage = createMatchMessage({
     senderId: aiPlayer.userId,
