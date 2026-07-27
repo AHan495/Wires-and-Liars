@@ -211,11 +211,10 @@ function MatchPage() {
       return;
     }
 
-    getRoom(room.id)
-      .then((res) => {
-        setRoom(res.room);
-        setMessages(res.room.messages ?? []);
-      });
+    getRoom(room.id).then((res) => {
+      setRoom(res.room);
+      setMessages(res.room.messages ?? []);
+    });
   }, [isVoteExpired, room?.id]);
 
   // automatically redirect to lobby after constant time after the vote ends

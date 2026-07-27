@@ -60,7 +60,10 @@ function ProfilePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-  const totalPages = Math.max(1, Math.ceil(histories.length / HISTORIES_PER_PAGE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(histories.length / HISTORIES_PER_PAGE),
+  );
   const pageStartIndex = (currentPage - 1) * HISTORIES_PER_PAGE;
   const visibleHistories = histories.slice(
     pageStartIndex,
@@ -149,20 +152,20 @@ function ProfilePage() {
                       <HistoryText component="p">
                         Color: {result?.playerColor ?? "unknown"}
                       </HistoryText>
-                    <HistoryToggle
-                      type="button"
-                      variant="outlined"
-                      endIcon={
-                        isTranscriptOpen ? (
-                          <ChevronUp size={16} strokeWidth={2} />
-                        ) : (
-                          <ChevronDown size={16} strokeWidth={2} />
-                        )
-                      }
-                      onClick={() => toggleHistory(history.id)}
-                    >
-                      Transcripts
-                    </HistoryToggle>
+                      <HistoryToggle
+                        type="button"
+                        variant="outlined"
+                        endIcon={
+                          isTranscriptOpen ? (
+                            <ChevronUp size={16} strokeWidth={2} />
+                          ) : (
+                            <ChevronDown size={16} strokeWidth={2} />
+                          )
+                        }
+                        onClick={() => toggleHistory(history.id)}
+                      >
+                        Transcripts
+                      </HistoryToggle>
                     </HistoryMeta>
 
                     {isTranscriptOpen ? (
@@ -197,7 +200,9 @@ function ProfilePage() {
                   variant="outlined"
                   disabled={currentPage === 1}
                   onClick={() =>
-                    setCurrentPage((currentValue) => Math.max(1, currentValue - 1))
+                    setCurrentPage((currentValue) =>
+                      Math.max(1, currentValue - 1),
+                    )
                   }
                 >
                   Previous

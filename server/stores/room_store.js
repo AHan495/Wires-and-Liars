@@ -299,7 +299,6 @@ export async function appendMatchMessage(room, message) {
   return updatedRoom;
 }
 
-
 export async function endMatch(roomCode, userId) {
   const room = await getRoom(roomCode);
   if (!room?.matchResult) return null;

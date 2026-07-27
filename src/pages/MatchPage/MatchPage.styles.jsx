@@ -216,7 +216,9 @@ export const MatchVoteButton = styled(Button, {
   fontWeight: 800,
   color: selected ? "#ffffff" : "var(--text)",
   borderColor: selected ? accentColor : "var(--border)",
-  backgroundColor: selected ? "rgba(96, 165, 250, 0.22)" : "rgba(15, 23, 42, 0.45)",
+  backgroundColor: selected
+    ? "rgba(96, 165, 250, 0.22)"
+    : "rgba(15, 23, 42, 0.45)",
   boxShadow: selected ? `0 0 0 3px ${accentColor}33` : "none",
   "&:hover, &:focus-visible": {
     borderColor: accentColor,

@@ -1,7 +1,9 @@
 import { MatchHistory } from "../models/match_history.js";
 
 function getHumanParticipants(room) {
-  return (room.matchParticipants ?? []).filter((participant) => !participant.isAI);
+  return (room.matchParticipants ?? []).filter(
+    (participant) => !participant.isAI,
+  );
 }
 
 function getStoredMessages(room) {
