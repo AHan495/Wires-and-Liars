@@ -6,13 +6,14 @@ import PaymentPage from "./pages/PaymentPage/PaymentPage";
 import PaymentTransitionPage from "./pages/PaymentPage/PaymentTransitionPage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import RoomPage from "./pages/RoomPage/RoomPage";
+import LandingPage from "./pages/LandingPage/LandingPage";
 import AuthRequired from "./AuthRequired";
 import SubscriptionRequired from "./SubscriptionRequired";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route element={<AuthRequired />}>
         <Route path="/payment" element={<PaymentPage />} />
