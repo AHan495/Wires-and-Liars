@@ -15,7 +15,7 @@ import {
 
 export const billingRouter = express.Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-const webhookEndpointSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET; // TODO: debug 400 errors despite using correct secret
+const webhookEndpointSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET;
 
 const FRONTEND_BASE_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 // The Wires and Liars product in Stripe is assigned a price, which has a lookup key we can assign through the Stripe

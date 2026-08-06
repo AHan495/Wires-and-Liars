@@ -33,7 +33,7 @@ authRouter.get("/callback", async (req, res) => {
   // https://docs.cloud.google.com/nodejs/docs/reference/google-auth-library/latest/google-auth-library/tokenpayload#google_auth_library_TokenPayload_sub_member
   const { sub, email } = verifiedToken.getPayload();
   req.session.userId = sub;
-  req.session.email = email; // TODO: may be better to only store userId in session as a Google user's email can change
+  req.session.email = email;
 
   const [user] = await User.findOrCreate({
     where: { id: sub },
