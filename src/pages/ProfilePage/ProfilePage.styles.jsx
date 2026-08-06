@@ -50,10 +50,46 @@ export const ProfileEmail = styled(Typography)({
   fontSize: "0.92rem",
 });
 
+export const ProfileActions = styled(Box)({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-end",
+  gap: "10px",
+  flexWrap: "wrap",
+  "& form": {
+    width: "auto",
+  },
+  "@media (max-width: 720px)": {
+    justifyContent: "flex-start",
+  },
+});
+
 export const HistoryCount = styled(Typography)({
   color: "var(--muted)",
   fontSize: "0.84rem",
   fontWeight: 700,
+});
+
+export const ProfileBillingButton = styled(Button)({
+  minHeight: "34px",
+  padding: "6px 12px",
+  borderRadius: "999px",
+  color: "var(--text)",
+  borderColor: "var(--border)",
+  backgroundColor: "rgba(22, 32, 51, 0.7)",
+  fontSize: "0.8rem",
+  fontWeight: 700,
+  textTransform: "none",
+  whiteSpace: "nowrap",
+  "&:hover, &:focus-visible": {
+    borderColor: "var(--border-strong)",
+    backgroundColor: "rgba(22, 32, 51, 0.86)",
+  },
+  "&.Mui-disabled": {
+    color: "rgba(148, 163, 184, 0.56)",
+    borderColor: "rgba(148, 163, 184, 0.22)",
+    backgroundColor: "rgba(15, 23, 42, 0.4)",
+  },
 });
 
 export const HistoryList = styled(Box)({

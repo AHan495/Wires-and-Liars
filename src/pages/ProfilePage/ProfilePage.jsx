@@ -1,8 +1,9 @@
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, CreditCard } from "lucide-react";
 import { useEffect, useState } from "react";
 import AppNav from "../../components/AppNav";
 import { useAuth } from "../../auth/AuthContext";
 import { getMatchHistories } from "../../services/rooms-api";
+import BillingPortalForm from "../PaymentPage/BillingPortalForm";
 import {
   EmptyState,
   HistoryCard,
@@ -16,6 +17,8 @@ import {
   PaginationActions,
   PaginationButton,
   PaginationInfo,
+  ProfileActions,
+  ProfileBillingButton,
   ProfileEmail,
   ProfileHeader,
   ProfileMain,
@@ -59,6 +62,7 @@ function ProfilePage() {
   const [openHistoryIds, setOpenHistoryIds] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [isBillingPortalLoading, setIsBillingPortalLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const totalPages = Math.max(
     1,
@@ -115,9 +119,26 @@ function ProfilePage() {
             <ProfileTitle component="h1">Profile</ProfileTitle>
             <ProfileEmail component="p">{currentUser?.email}</ProfileEmail>
           </div>
-          <HistoryCount component="span">
-            {histories.length} match{histories.length === 1 ? "" : "es"}
-          </HistoryCount>
+          <ProfileActions>
+            <HistoryCount component="span">
+              {histories.length} match{histories.length === 1 ? "" : "es"}
+            </HistoryCount>
+            <BillingPortalForm
+              onSubmit={() => setIsBillingPortalLoading(true)}
+              returnPath="/profile"
+            >
+              <ProfileBillingButton
+                type="submit"
+                variant="outlined"
+                disabled={isBillingPortalLoading}
+                startIcon={<CreditCard size={15} strokeWidth={2.2} />}
+              >
+                {isBillingPortalLoading
+                  ? "Opening billing portal..."
+                  : "Manage subscription"}
+              </ProfileBillingButton>
+            </BillingPortalForm>
+          </ProfileActions>
         </ProfileHeader>
 
         {isLoading || errorMessage || histories.length === 0 ? (
