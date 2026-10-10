@@ -3,6 +3,10 @@
 This repository is a copy of the original on Github Classroom, and was made with 2 other people.
 The "ai-sessions" directory has been purged from this copy for containing session keys and other secrets.
 
+Some mistakes from the original remain (Such as not guarding backend endpoints behind authentication) but since those were in someone elses scope during the project I didn't bother fixing them in this copy.
+
+Overall I'm pretty happy with how we did. Everything I was responsible for (Google OAuth, AI integration, TTS and STT, deployment) went very well.
+
 ## Team Members
 
 - Ali Rajan - rajanal1
@@ -52,17 +56,9 @@ text to speech to interact with it.
 
 We will use Webhooks and Cloudflared Tunnels
 
-Sandbox account publishable key:
-
-```bash
-pk_test_51TqwFeLK7OPlaQg67SQgt5NK11tetG5sEJursoiDp8XulqkmHPlHvR1SolNJAlCtoYFVmyzV7vd7B8XbzKw4OAM600wUaihOIy
-```
-
 ### Deployment
 
-- Assignee: Everyone(?)
-
-Domain name: TBA
+- Assignee: Autin Han
 
 ### Architecture
 
